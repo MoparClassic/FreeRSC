@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="62">
+  <logicalFolder name="root" displayName="root" projectFiles="true">
+    <df name="FreeRSC" root=".">
+      <df name="autom4te.cache">
+      </df>
+      <df name="include">
+        <in>bubble.h</in>
+        <in>chatmessage.h</in>
+        <in>circularbuffer.h</in>
+        <in>client.h</in>
+        <in>clientupdater.h</in>
+        <in>common.h</in>
+        <in>config.h</in>
+        <in>entitystatelist.h</in>
+        <in>gameobject.h</in>
+        <in>item.h</in>
+        <in>linkedlist.h</in>
+        <in>listener.h</in>
+        <in>npc.h</in>
+        <in>packethandler.h</in>
+        <in>player.h</in>
+        <in>projectile.h</in>
+        <in>server.h</in>
+        <in>util.h</in>
+        <in>world.h</in>
+      </df>
+      <df name="libs">
+        <df name="libev">
+          <df name="autom4te.cache">
+          </df>
+          <in>ev++.h</in>
+          <in>ev.c</in>
+          <in>ev.h</in>
+          <in>ev_epoll.c</in>
+          <in>ev_kqueue.c</in>
+          <in>ev_poll.c</in>
+          <in>ev_port.c</in>
+          <in>ev_select.c</in>
+          <in>ev_vars.h</in>
+          <in>ev_win32.c</in>
+          <in>ev_wrap.h</in>
+          <in>event.c</in>
+          <in>event.h</in>
+        </df>
+      </df>
+      <df name="src">
+        <in>circularbuffer.c</in>
+        <in>client.c</in>
+        <in>clientupdater.c</in>
+        <in>entitystatelist.c</in>
+        <in>gameobject.c</in>
+        <in>item.c</in>
+        <in>linkedlist.c</in>
+        <in>listener.c</in>
+        <in>npc.c</in>
+        <in>packethandler.c</in>
+        <in>player.c</in>
+        <in>server.c</in>
+        <in>util.c</in>
+        <in>world.c</in>
+      </df>
+      <df name="tests">
+        <in>AllTests.c</in>
+        <in>CircularBufferTests.c</in>
+        <in>CircularBufferTests.h</in>
+        <in>ClientTests.c</in>
+        <in>ClientTests.h</in>
+        <in>ClientUpdaterTests.c</in>
+        <in>ClientUpdaterTests.h</in>
+        <in>CuTest.c</in>
+        <in>CuTest.h</in>
+        <in>EntityStateListTests.c</in>
+        <in>EntityStateListTests.h</in>
+        <in>GameObjectTests.c</in>
+        <in>GameObjectTests.h</in>
+        <in>ItemTests.c</in>
+        <in>ItemTests.h</in>
+        <in>LinkedListTests.c</in>
+        <in>LinkedListTests.h</in>
+        <in>NpcTests.c</in>
+        <in>NpcTests.h</in>
+        <in>PlayerTests.c</in>
+        <in>PlayerTests.h</in>
+        <in>TestCommon.h</in>
+        <in>UtilTests.c</in>
+        <in>UtilTests.h</in>
+        <in>WorldTests.c</in>
+        <in>WorldTests.h</in>
+      </df>
+    </df>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false">
+      <itemPath>Makefile</itemPath>
+      <itemPath>Makefile-FreeRSC.mk</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceRootList>
+    <Elem>.</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile-FreeRSC.mk</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>GNU|GNU</compilerSet>
+        <platform>2</platform>
+      </toolsSet>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>.</buildCommandWorkingDir>
+          <buildCommand>$(MAKE) -f Makefile</buildCommand>
+          <cleanCommand>$(MAKE) -f Makefile clean</cleanCommand>
+          <executablePath>./src/FreeRSC</executablePath>
+          <cTool>
+            <incDir>
+              <pElem>include</pElem>
+            </incDir>
+            <preprocessorList>
+              <Elem>HAVE_CONFIG_H</Elem>
+            </preprocessorList>
+          </cTool>
+        </makeTool>
+      </makefileType>
+      <folder path="FreeRSC/src">
+        <cTool>
+          <incDir>
+            <pElem>src</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+    </conf>
+  </confs>
+</configurationDescriptor>
