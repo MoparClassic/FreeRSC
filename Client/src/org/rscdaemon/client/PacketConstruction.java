@@ -65,9 +65,7 @@ public class PacketConstruction {
                 return 0;
             }
             if (length == 0 && inputStreamAvailable() >= 2) {
-                length = readInputStream();
-                if (length >= 160)
-                    length = (length - 160) * 256 + readInputStream();
+                length = (readInputStream() << 8) | readInputStream();
             }
             if (length > 0 && inputStreamAvailable() >= length) {
                 if (length >= 160) {
