@@ -1,6 +1,7 @@
 AC_INIT([FreeRSC], [0.1], [lothyis@gmail.com])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 AC_PROG_CC
+AC_PROG_LIBTOOL
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADERS([include/config.h])
 
@@ -40,5 +41,5 @@ AC_CHECK_FUNCS(nanosleep, [], [
 AC_CHECK_LIB(m, ceil)
 
 AC_CHECK_FUNCS([strlcat strlcpy strdup])
-AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile])
+AC_CONFIG_FILES([Makefile libs/Makefile libs/libev/Makefile src/Makefile tests/Makefile])
 AC_OUTPUT

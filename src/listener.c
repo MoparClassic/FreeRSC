@@ -149,6 +149,10 @@ void read_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
                 return;
             }
         }
+        else {
+            cbuffer_rewind_read_position(cbuf);
+            return;
+        }
     }
 }
 

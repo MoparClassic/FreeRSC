@@ -1,4 +1,4 @@
-AM_CFLAGS = -DUNIT_TESTING -DUNIT_TESTING_VERBOSITY_LEVEL=1 -DSTATIC_ALLOC_CLIENTS=100 -DSTATIC_ALLOC_LINKEDLIST_NODES=2000 -DMAX_PLAYERS=10
+AM_CFLAGS = -O2 -pedantic -I../libs/libev -DUNIT_TESTING -DUNIT_TESTING_VERBOSITY_LEVEL=1 -DSTATIC_ALLOC_CLIENTS=100 -DSTATIC_ALLOC_LINKEDLIST_NODES=2000 -DMAX_PLAYERS=10
 bin_PROGRAMS = FreeRSCUnitTests
 FreeRSCUnitTests_SOURCES = AllTests.c \
 			CuTest.c \
@@ -25,5 +25,5 @@ FreeRSCUnitTests_SOURCES = AllTests.c \
 			../src/clientupdater.c \
 			ClientUpdaterTests.c
 
-FreeRSCUnitTests_LDADD = -lrt
-FreeRSCUnitTests_LDFLAGS = -L/usr/local/lib
+FreeRSCUnitTests_LDADD = -lrt ../libs/libev/libevrsc.la
+FreeRSCUnitTests_LDFLAGS = -L/usr/local/lib -static
