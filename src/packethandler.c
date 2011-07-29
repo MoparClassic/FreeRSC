@@ -278,6 +278,7 @@ print_payload(client_t *client, unsigned int opcode, int packet_size)
     cbuffer_rewind_read_position(cbuf);
     printf("\n");
 #endif
+    return 0;
 }
 
 int discard(client_t *client, unsigned int opcode, int packet_size)
