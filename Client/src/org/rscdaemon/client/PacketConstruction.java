@@ -68,13 +68,7 @@ public class PacketConstruction {
                 length = (readInputStream() << 8) | readInputStream();
             }
             if (length > 0 && inputStreamAvailable() >= length) {
-                if (length >= 160) {
-                    readInputStream(length, data);
-                } else {
-                    data[length - 1] = (byte) readInputStream();
-                    if (length > 1)
-                        readInputStream(length - 1, data);
-                }
+                readInputStream(length, data);
                 int readBytes = length;
                 length = 0;
                 packetReadCount = 0;
