@@ -9,15 +9,10 @@
 #define	PACKET_HANDLER_H
 
 #include "client.h"
+#include "common.h"
 
 extern int (*packet_decoder_table[256])(client_t *,
-                                        unsigned int opcode, int packet_size);
-
-int discard(client_t *, unsigned int opcode, int packet_size);
-int session_request(client_t *, unsigned int opcode, int packet_size);
-int login(client_t *, unsigned int opcode, int packet_size);
-int logout(client_t *, unsigned int opcode, int packet_size);
-
+                                        uint32_t opcode, uint32_t psiz);
 
 #endif	/* PACKET_HANDLER_H */
 

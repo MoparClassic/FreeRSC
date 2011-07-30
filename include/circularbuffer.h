@@ -69,6 +69,7 @@ uint8_t cbuffer_read_byte(cbuffer_t *cbuf);
 uint16_t cbuffer_read_short(cbuffer_t *cbuf);
 uint32_t cbuffer_read_int(cbuffer_t *cbuf);
 uint64_t cbuffer_read_long(cbuffer_t *cbuf);
+int cbuffer_read_bytes(cbuffer_t *cbuf, uint8_t *dst, size_t siz);
 int cbuffer_read_fixedlen_string(cbuffer_t *cbuf, int readlen,
                                  char *dst, size_t siz);
 void cbuffer_skip(cbuffer_t *cbuf, int skip);

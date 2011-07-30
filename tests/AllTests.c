@@ -38,6 +38,8 @@ run_all_tests()
     CuSuiteAddSuite(suite, (CuSuite *) get_npc_test_suite());
     CuSuiteAddSuite(suite, (CuSuite *) get_clientupdater_test_suite());
 
+    CuSuiteAddSuite(suite, (CuSuite *) get_encryption_test_suite());
+
 
     CuSuiteRun(suite);
     CuSuiteSummary(suite, output);

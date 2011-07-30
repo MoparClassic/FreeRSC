@@ -1,16 +1,86 @@
 #include "packethandler.h"
 
+#include "dataoperations.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-int (*packet_decoder_table[256])(client_t *client, unsigned int opcode,
-                                 int packet_size) = {
-    &discard, /* 0 */
+static int discard(client_t *, uint32_t, uint32_t);
+static int session_request(client_t *, uint32_t, uint32_t);
+static int login(client_t *, uint32_t, uint32_t);
+static int logout_request(client_t *, uint32_t, uint32_t);
+static int logout(client_t *, uint32_t, uint32_t);
+static int register_account(client_t *, uint32_t, uint32_t);
+static int ping(client_t *, uint32_t, uint32_t);
+static int its_a_trap(client_t *, uint32_t, uint32_t); /* Trololol :D */
+static int walk_request(client_t *, uint32_t, uint32_t);
+static int chat(client_t *, uint32_t, uint32_t);
+static int privacy_settings(client_t *, uint32_t, uint32_t);
+static int game_settings(client_t *, uint32_t, uint32_t);
+static int drop_item(client_t *, uint32_t, uint32_t);
+static int activate_prayer(client_t *, uint32_t, uint32_t);
+static int deactivate_prayer(client_t *, uint32_t, uint32_t);
+static int command(client_t *, uint32_t, uint32_t);
+static int wield_item(client_t *, uint32_t, uint32_t);
+static int unwield_item(client_t *, uint32_t, uint32_t);
+static int player_appearances(client_t *, uint32_t, uint32_t);
+static int spell_on_self(client_t *, uint32_t, uint32_t);
+static int spell_on_player(client_t *, uint32_t, uint32_t);
+static int spell_on_npc(client_t *, uint32_t, uint32_t);
+static int spell_on_inventory_item(client_t *, uint32_t, uint32_t);
+static int spell_on_door(client_t *, uint32_t, uint32_t);
+static int spell_on_object(client_t *, uint32_t, uint32_t);
+static int spell_on_ground_item(client_t *, uint32_t, uint32_t);
+static int spell_on_ground(client_t *, uint32_t, uint32_t);
+static int appearance_changed(client_t *, uint32_t, uint32_t);
+static int send_trade_request(client_t *, uint32_t, uint32_t);
+static int accept_trade(client_t *, uint32_t, uint32_t);
+static int confirm_accept_trade(client_t *, uint32_t, uint32_t);
+static int decline_trade(client_t *, uint32_t, uint32_t);
+static int receive_trade_offer(client_t *, uint32_t, uint32_t);
+static int send_duel_request(client_t *, uint32_t, uint32_t);
+static int accept_duel(client_t *, uint32_t, uint32_t);
+static int confirm_accept_duel(client_t *, uint32_t, uint32_t);
+static int decline_duel(client_t *, uint32_t, uint32_t);
+static int receive_duel_offer(client_t *, uint32_t, uint32_t);
+static int set_duel_options(client_t *, uint32_t, uint32_t);
+static int add_friend(client_t *, uint32_t, uint32_t);
+static int remove_friend(client_t *, uint32_t, uint32_t);
+static int add_ignore(client_t *, uint32_t, uint32_t);
+static int remove_ignore(client_t *, uint32_t, uint32_t);
+static int send_pm(client_t *, uint32_t, uint32_t);
+static int use_item(client_t *, uint32_t, uint32_t);
+static int use_item_on_player(client_t *, uint32_t, uint32_t);
+static int use_item_on_door(client_t *, uint32_t, uint32_t);
+static int use_item_on_object(client_t *, uint32_t, uint32_t);
+static int use_item_on_ground_item(client_t *, uint32_t, uint32_t);
+static int use_item_on_item(client_t *, uint32_t, uint32_t);
+static int use_item_on_npc(client_t *, uint32_t, uint32_t);
+static int pickup_item(client_t *, uint32_t, uint32_t);
+static int object_action(client_t *, uint32_t, uint32_t);
+static int wall_object_action(client_t *, uint32_t, uint32_t);
+static int attack_player(client_t *, uint32_t, uint32_t);
+static int attack_npc(client_t *, uint32_t, uint32_t);
+static int change_attack_style(client_t *, uint32_t, uint32_t);
+static int talk_to_npc(client_t *, uint32_t, uint32_t);
+static int close_bank(client_t *, uint32_t, uint32_t);
+static int deposit_item(client_t *, uint32_t, uint32_t);
+static int withdraw_item(client_t *, uint32_t, uint32_t);
+static int menu_response(client_t *, uint32_t, uint32_t);
+static int exception_handler(client_t *, uint32_t, uint32_t);
+static int close_shop(client_t *, uint32_t, uint32_t);
+static int buy_item(client_t *, uint32_t, uint32_t);
+static int sell_item(client_t *, uint32_t, uint32_t);
+static int follow_player(client_t *, uint32_t, uint32_t);
+static int npc_command(client_t *, uint32_t, uint32_t);
+
+int (*packet_decoder_table[256])(client_t *client, uint32_t opcode,
+                                 uint32_t psiz) = {
+    &login, /* 0 */
     &discard, /* 1 */
     &discard, /* 2 */
-    &discard, /* 3 */
+    &its_a_trap, /* 3 */
     &discard, /* 4 */
-    &discard, /* 5 */
+    &ping, /* 5 */
     &discard, /* 6 */
     &discard, /* 7 */
     &discard, /* 8 */
@@ -21,8 +91,8 @@ int (*packet_decoder_table[256])(client_t *client, unsigned int opcode,
     &discard, /* 13 */
     &discard, /* 14 */
     &discard, /* 15 */
-    &discard, /* 16 */
-    &discard, /* 17 */
+    &use_item_on_player, /* 16 */
+    &spell_on_object, /* 17 */
     &discard, /* 18 */
     &discard, /* 19 */
     &discard, /* 20 */
@@ -30,39 +100,39 @@ int (*packet_decoder_table[256])(client_t *client, unsigned int opcode,
     &discard, /* 22 */
     &discard, /* 23 */
     &discard, /* 24 */
-    &discard, /* 25 */
+    &add_ignore, /* 25 */
     &discard, /* 26 */
-    &discard, /* 27 */
+    &use_item_on_item, /* 27 */
     &discard, /* 28 */
     &discard, /* 29 */
     &discard, /* 30 */
     &discard, /* 31 */
     &session_request, /* 32 */
     &discard, /* 33 */
-    &discard, /* 34 */
-    &discard, /* 35 */
-    &discard, /* 36 */
+    &use_item_on_ground_item, /* 34 */
+    &decline_duel, /* 35 */
+    &use_item_on_door, /* 36 */
     &discard, /* 37 */
     &discard, /* 38 */
-    &discard, /* 39 */
-    &discard, /* 40 */
+    &logout, /* 39 */
+    &object_action, /* 40 */
     &discard, /* 41 */
-    &discard, /* 42 */
+    &change_attack_style, /* 42 */
     &discard, /* 43 */
     &discard, /* 44 */
     &discard, /* 45 */
     &discard, /* 46 */
     &discard, /* 47 */
-    &discard, /* 48 */
-    &discard, /* 49 */
+    &close_bank, /* 48 */
+    &spell_on_inventory_item, /* 49 */
     &discard, /* 50 */
-    &discard, /* 51 */
-    &discard, /* 52 */
-    &discard, /* 53 */
+    &object_action, /* 51 */
+    &remove_friend, /* 52 */
+    &confirm_accept_trade, /* 53 */
     &discard, /* 54 */
-    &discard, /* 55 */
-    &discard, /* 56 */
-    &discard, /* 57 */
+    &spell_on_player, /* 55 */
+    &activate_prayer, /* 56 */
+    &attack_player, /* 57 */
     &discard, /* 58 */
     &discard, /* 59 */
     &discard, /* 60 */
@@ -72,14 +142,14 @@ int (*packet_decoder_table[256])(client_t *client, unsigned int opcode,
     &discard, /* 64 */
     &discard, /* 65 */
     &discard, /* 66 */
-    &discard, /* 67 */
-    &discard, /* 68 */
+    &spell_on_door, /* 67 */
+    &follow_player, /* 68 */
     &discard, /* 69 */
-    &discard, /* 70 */
-    &discard, /* 71 */
+    &receive_trade_offer, /* 70 */
+    &spell_on_npc, /* 71 */
     &discard, /* 72 */
-    &discard, /* 73 */
-    &discard, /* 74 */
+    &attack_npc, /* 73 */
+    &npc_command, /* 74 */
     &discard, /* 75 */
     &discard, /* 76 */
     &discard, /* 77 */
@@ -88,18 +158,18 @@ int (*packet_decoder_table[256])(client_t *client, unsigned int opcode,
     &discard, /* 80 */
     &discard, /* 81 */
     &discard, /* 82 */
-    &discard, /* 83 */
+    &player_appearances, /* 83 */
     &discard, /* 84 */
     &discard, /* 85 */
     &discard, /* 86 */
-    &discard, /* 87 */
+    &confirm_accept_duel, /* 87 */
     &discard, /* 88 */
-    &discard, /* 89 */
-    &discard, /* 90 */
+    &use_item, /* 89 */
+    &command, /* 90 */
     &discard, /* 91 */
-    &discard, /* 92 */
+    &unwield_item, /* 92 */
     &discard, /* 93 */
-    &discard, /* 94 */
+    &use_item_on_object, /* 94 */
     &discard, /* 95 */
     &discard, /* 96 */
     &discard, /* 97 */
@@ -109,11 +179,11 @@ int (*packet_decoder_table[256])(client_t *client, unsigned int opcode,
     &discard, /* 101 */
     &discard, /* 102 */
     &discard, /* 103 */
-    &discard, /* 104 */
+    &spell_on_ground_item, /* 104 */
     &discard, /* 105 */
     &discard, /* 106 */
     &discard, /* 107 */
-    &discard, /* 108 */
+    &remove_ignore, /* 108 */
     &discard, /* 109 */
     &discard, /* 110 */
     &discard, /* 111 */
@@ -128,16 +198,16 @@ int (*packet_decoder_table[256])(client_t *client, unsigned int opcode,
     &discard, /* 120 */
     &discard, /* 121 */
     &discard, /* 122 */
-    &discard, /* 123 */
+    &receive_duel_offer, /* 123 */
     &discard, /* 124 */
     &discard, /* 125 */
-    &discard, /* 126 */
+    &wall_object_action, /* 126 */
     &discard, /* 127 */
-    &discard, /* 128 */
-    &discard, /* 129 */
+    &buy_item, /* 128 */
+    &logout_request, /* 129 */
     &discard, /* 130 */
     &discard, /* 131 */
-    &discard, /* 132 */
+    &walk_request, /* 132 */
     &discard, /* 133 */
     &discard, /* 134 */
     &discard, /* 135 */
@@ -147,22 +217,22 @@ int (*packet_decoder_table[256])(client_t *client, unsigned int opcode,
     &discard, /* 139 */
     &discard, /* 140 */
     &discard, /* 141 */
-    &discard, /* 142 */
+    &use_item_on_npc, /* 142 */
     &discard, /* 143 */
     &discard, /* 144 */
-    &discard, /* 145 */
+    &chat, /* 145 */
     &discard, /* 146 */
     &discard, /* 147 */
     &discard, /* 148 */
     &discard, /* 149 */
     &discard, /* 150 */
-    &discard, /* 151 */
+    &register_account, /* 151 */
     &discard, /* 152 */
     &discard, /* 153 */
-    &discard, /* 154 */
+    &menu_response, /* 154 */
     &discard, /* 155 */
-    &discard, /* 156 */
-    &discard, /* 157 */
+    &exception_handler, /* 156 */
+    &game_settings, /* 157 */
     &discard, /* 158 */
     &discard, /* 159 */
     &discard, /* 160 */
@@ -171,9 +241,9 @@ int (*packet_decoder_table[256])(client_t *client, unsigned int opcode,
     &discard, /* 163 */
     &discard, /* 164 */
     &discard, /* 165 */
-    &discard, /* 166 */
+    &send_trade_request, /* 166 */
     &discard, /* 167 */
-    &discard, /* 168 */
+    &add_friend, /* 168 */
     &discard, /* 169 */
     &discard, /* 170 */
     &discard, /* 171 */
@@ -181,14 +251,14 @@ int (*packet_decoder_table[256])(client_t *client, unsigned int opcode,
     &discard, /* 173 */
     &discard, /* 174 */
     &discard, /* 175 */
-    &discard, /* 176 */
-    &discard, /* 177 */
+    &privacy_settings, /* 176 */
+    &talk_to_npc, /* 177 */
     &discard, /* 178 */
     &discard, /* 179 */
     &discard, /* 180 */
-    &discard, /* 181 */
+    &wield_item, /* 181 */
     &discard, /* 182 */
-    &discard, /* 183 */
+    &withdraw_item, /* 183 */
     &discard, /* 184 */
     &discard, /* 185 */
     &discard, /* 186 */
@@ -203,7 +273,7 @@ int (*packet_decoder_table[256])(client_t *client, unsigned int opcode,
     &discard, /* 195 */
     &discard, /* 196 */
     &discard, /* 197 */
-    &discard, /* 198 */
+    &deposit_item, /* 198 */
     &discard, /* 199 */
     &discard, /* 200 */
     &discard, /* 201 */
@@ -211,36 +281,36 @@ int (*packet_decoder_table[256])(client_t *client, unsigned int opcode,
     &discard, /* 203 */
     &discard, /* 204 */
     &discard, /* 205 */
-    &discard, /* 206 */
+    &spell_on_self, /* 206 */
     &discard, /* 207 */
     &discard, /* 208 */
     &discard, /* 209 */
     &discard, /* 210 */
-    &discard, /* 211 */
+    &accept_trade, /* 211 */
     &discard, /* 212 */
     &discard, /* 213 */
     &discard, /* 214 */
     &discard, /* 215 */
-    &discard, /* 216 */
+    &decline_trade, /* 216 */
     &discard, /* 217 */
-    &discard, /* 218 */
+    &appearance_changed, /* 218 */
     &discard, /* 219 */
     &discard, /* 220 */
     &discard, /* 221 */
-    &discard, /* 222 */
+    &send_duel_request, /* 222 */
     &discard, /* 223 */
     &discard, /* 224 */
-    &discard, /* 225 */
+    &set_duel_options, /* 225 */
     &discard, /* 226 */
     &discard, /* 227 */
     &discard, /* 228 */
     &discard, /* 229 */
     &discard, /* 230 */
     &discard, /* 231 */
-    &discard, /* 232 */
+    &spell_on_ground, /* 232 */
     &discard, /* 233 */
     &discard, /* 234 */
-    &discard, /* 235 */
+    &wall_object_action, /* 235 */
     &discard, /* 236 */
     &discard, /* 237 */
     &discard, /* 238 */
@@ -250,17 +320,17 @@ int (*packet_decoder_table[256])(client_t *client, unsigned int opcode,
     &discard, /* 242 */
     &discard, /* 243 */
     &discard, /* 244 */
-    &discard, /* 245 */
-    &discard, /* 246 */
+    &pickup_item, /* 245 */
+    &walk_request, /* 246 */
     &discard, /* 247 */
-    &discard, /* 248 */
+    &deactivate_prayer, /* 248 */
     &discard, /* 249 */
     &discard, /* 250 */
     &discard, /* 251 */
-    &discard, /* 252 */
-    &discard, /* 253 */
-    &discard, /* 254 */
-    &discard, /* 255 */
+    &accept_duel, /* 252 */
+    &close_shop, /* 253 */
+    &send_pm, /* 254 */
+    &sell_item, /* 255 */
 };
 
 //#define PRINT_PAYLOAD
@@ -283,28 +353,30 @@ print_payload(client_t *client, unsigned int opcode, int packet_size)
     return 0;
 }
 
-int discard(client_t *client, unsigned int opcode, int packet_size)
+static int
+discard(client_t *client, uint32_t opcode, uint32_t psiz)
 {
     cbuffer_t *cbuf = &client->in_buffer;
 
-    print_payload(client, opcode, packet_size);
-    cbuf->read_offset += packet_size;
+    print_payload(client, opcode, psiz);
+    cbuf->read_offset += psiz;
     return 1;
 }
 
-int session_request(client_t *client, unsigned int opcode, int packet_size)
+static int
+session_request(client_t *client, uint32_t opcode, uint32_t psiz)
 {
     cbuffer_t *inbuf = &client->in_buffer;
     cbuffer_t *outbuf = &client->out_buffer;
     uint64_t randval = 0LL;
-    int psiz = packet_size - 1; /* We skip the first byte; we don't use it */
-    char str[31];
+    int ps = psiz - 1; /* We skip the first byte; we don't use it */
+    char str[32];
 
-    print_payload(client, opcode, packet_size);
+    print_payload(client, opcode, psiz);
 
     memset(str, '\0', sizeof(str));
     cbuffer_skip(inbuf, 1); /* First byte skipped */
-    cbuffer_read_fixedlen_string(inbuf, psiz, str, sizeof(str));
+    cbuffer_read_fixedlen_string(inbuf, ps, str, sizeof(str));
 
     printf("String received: '%s'\n", str);
 
@@ -317,13 +389,490 @@ int session_request(client_t *client, unsigned int opcode, int packet_size)
     return 1;
 }
 
-int login(client_t *client, unsigned int opcode, int packet_size)
+static int
+login(client_t *client, uint32_t opcode, uint32_t psiz)
 {
-    cbuffer_t *cbuf = &client->in_buffer;
+    cbuffer_t *inbuf = &client->in_buffer;
+    uint8_t reconnecting = 0;
+    uint16_t client_version = 0;
+    uint32_t uid;
+    uint32_t session_keys[4];
+    uint8_t buf[psiz - 4];
+    int ofs = 0;
+    int ps = psiz;
+    int encrypted_siz;
+    int i;
+    char username_dirty[21];
+    char password_dirty[21];
+    char username[13];
+    char password[21];
+
+    cbuffer_mark_read_position(inbuf);
+    reconnecting = cbuffer_read_byte(inbuf);
+    client_version = cbuffer_read_short(inbuf);
+    encrypted_siz = cbuffer_read_byte(inbuf);
+
+    cbuffer_read_bytes(inbuf, buf, sizeof(buf));
+    for (i = 0; i < sizeof(buf); ++i) {
+        printf("'%d', ", buf[i]);
+    }
+    printf("\n");
+
+    cbuffer_rewind_read_position(inbuf);
+    discard(client, opcode, psiz);
     return 0;
 }
 
-int logout(client_t *client, unsigned int opcode, int packet_size)
+static int
+logout_request(client_t *client, uint32_t opcode, uint32_t psiz)
 {
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+logout(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+register_account(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+ping(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+its_a_trap(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+walk_request(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+chat(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+privacy_settings(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+game_settings(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+drop_item(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+activate_prayer(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+deactivate_prayer(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+command(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+wield_item(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+unwield_item(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+player_appearances(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+spell_on_self(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+spell_on_player(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+spell_on_npc(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+spell_on_inventory_item(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+spell_on_door(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+spell_on_object(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+static int
+spell_on_ground_item(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+spell_on_ground(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+appearance_changed(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+send_trade_request(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+accept_trade(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+confirm_accept_trade(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+decline_trade(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+receive_trade_offer(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+send_duel_request(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+accept_duel(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+confirm_accept_duel(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+decline_duel(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+receive_duel_offer(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+set_duel_options(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+add_friend(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+remove_friend(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+add_ignore(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+remove_ignore(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+send_pm(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+use_item(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+use_item_on_player(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+use_item_on_door(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+use_item_on_object(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+use_item_on_ground_item(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+use_item_on_item(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+use_item_on_npc(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+pickup_item(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+object_action(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+wall_object_action(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+attack_player(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+attack_npc(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+change_attack_style(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+talk_to_npc(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+close_bank(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+deposit_item(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+withdraw_item(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+menu_response(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+exception_handler(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+close_shop(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+buy_item(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+sell_item(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+follow_player(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
+    return 0;
+}
+
+static int
+npc_command(client_t *client, uint32_t opcode, uint32_t psiz)
+{
+    discard(client, opcode, psiz);
     return 0;
 }

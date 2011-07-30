@@ -282,15 +282,27 @@ uint64_t cbuffer_read_long(cbuffer_t *cbuf)
     return value;
 }
 
+int cbuffer_read_bytes(cbuffer_t *cbuf, uint8_t *dst, size_t siz)
+{
+    uint8_t *d = dst;
+    int i;
+
+    for (i = 0; i < siz; ++i) {
+        *d++ = cbuffer_read_byte(cbuf);
+    }
+
+    return d - dst;
+}
+
 int cbuffer_read_fixedlen_string(cbuffer_t *cbuf, int readlen, char *dst, size_t siz)
 {
     char *d = dst;
     size_t n = siz;
-    int nr = readlen;
+    int nr = readlen + 1;
     int read = 0;
 
-    if (n != 0 && nr >= 0) {
-        while (--n != 0 && --nr >= 0) {
+    if (n != 0 && nr != 0) {
+        while (--n != 0 && --nr != 0) {
             ++read;
             if ( (*d++ = cbuffer_read_byte(cbuf)) == '\0') {
                 break;
@@ -301,6 +313,12 @@ int cbuffer_read_fixedlen_string(cbuffer_t *cbuf, int readlen, char *dst, size_t
     if (n == 0) {
         if (siz != 0) {
             *d = '\0';
+        }
+    }
+
+    if (nr != 0) {
+        while (--nr != 0) {
+            cbuffer_read_byte(cbuf);
         }
     }
 

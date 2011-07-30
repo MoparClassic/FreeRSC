@@ -55,8 +55,8 @@ void read_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
 {
     ssize_t read;
     client_t *client = (client_t *) watcher->attachment;
-    cbuffer_t *cbuf = &client->in_buffer;
-    int buf_space = sizeof (cbuf->buffer) - cbuf->write_offset;
+    cbuffer_t *inbuf = &client->in_buffer;
+    int buf_space = sizeof (inbuf->buffer) - inbuf->write_offset;
     int avail;
     int opcode;
     int plen;
@@ -74,11 +74,11 @@ void read_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
      * buffer. ie, write_offset should point to index zero.
      */
     if (0 == buf_space) {
-        cbuf->write_offset = 0;
-        buf_space = sizeof (cbuf->buffer);
+        inbuf->write_offset = 0;
+        buf_space = sizeof (inbuf->buffer);
     }
 
-    read = recv(watcher->fd, &cbuf->buffer[cbuf->write_offset], buf_space, 0);
+    read = recv(watcher->fd, &inbuf->buffer[inbuf->write_offset], buf_space, 0);
     if (read < 0) {
         if (errno == EAGAIN) {
             return; // Nothing to read
@@ -94,7 +94,7 @@ void read_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
     }
 
     // Some data was read into the buffer, so increase the write ptr
-    cbuf->write_offset += read;
+    inbuf->write_offset += read;
 
     printf("Data received: %d\n", read);
 
@@ -106,9 +106,9 @@ void read_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
      * circular buffer and try another call to recv.
      */
     if (read == buf_space) {
-        cbuf->write_offset = 0;
-        buf_space = sizeof (cbuf->buffer);
-        read = recv(watcher->fd, &cbuf->buffer[cbuf->write_offset],
+        inbuf->write_offset = 0;
+        buf_space = sizeof (inbuf->buffer);
+        read = recv(watcher->fd, &inbuf->buffer[inbuf->write_offset],
                     buf_space - read, 0);
 
         // Check
@@ -123,7 +123,7 @@ void read_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
             return;
         }
 
-        cbuf->write_offset += read;
+        inbuf->write_offset += read;
     }
 
     printf("Handling packet\n");
@@ -133,24 +133,24 @@ void read_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
      * start handling the data that we have received.
      */
     while (1) {
-        cbuffer_mark_read_position(cbuf);
-        avail = cbuffer_available(cbuf);
+        cbuffer_mark_read_position(inbuf);
+        avail = cbuffer_available(inbuf);
 
         if (avail >= 2) {
-            plen = cbuffer_read_short(cbuf);
+            plen = cbuffer_read_short(inbuf);
             if (avail - 2 >= plen) {
-                opcode = cbuffer_read_byte(cbuf);
+                opcode = cbuffer_read_byte(inbuf);
                 --plen; // Minus one because we just read the opcode
                 (*packet_decoder_table[opcode])(client, opcode, plen);
                 continue;
             }
             else {
-                cbuffer_rewind_read_position(cbuf);
+                cbuffer_rewind_read_position(inbuf);
                 return;
             }
         }
         else {
-            cbuffer_rewind_read_position(cbuf);
+            cbuffer_rewind_read_position(inbuf);
             return;
         }
     }

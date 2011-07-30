@@ -51,11 +51,11 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_FreeRSC_OBJECTS = circularbuffer.$(OBJEXT) client.$(OBJEXT) \
-	clientupdater.$(OBJEXT) entitystatelist.$(OBJEXT) \
-	gameobject.$(OBJEXT) item.$(OBJEXT) linkedlist.$(OBJEXT) \
-	listener.$(OBJEXT) npc.$(OBJEXT) packethandler.$(OBJEXT) \
-	player.$(OBJEXT) server.$(OBJEXT) util.$(OBJEXT) \
-	world.$(OBJEXT)
+	clientupdater.$(OBJEXT) dataoperations.$(OBJEXT) \
+	entitystatelist.$(OBJEXT) gameobject.$(OBJEXT) item.$(OBJEXT) \
+	linkedlist.$(OBJEXT) listener.$(OBJEXT) npc.$(OBJEXT) \
+	packethandler.$(OBJEXT) player.$(OBJEXT) server.$(OBJEXT) \
+	util.$(OBJEXT) world.$(OBJEXT)
 FreeRSC_OBJECTS = $(am_FreeRSC_OBJECTS)
 FreeRSC_DEPENDENCIES = ../libs/libev/libevrsc.la
 FreeRSC_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
@@ -194,6 +194,7 @@ AM_CFLAGS = -O2 -pedantic -I../libs/libev -DPRINT_PAYLOAD -DSTATIC_ALLOC_CLIENTS
 FreeRSC_SOURCES = circularbuffer.c \
 		client.c \
 		clientupdater.c \
+		dataoperations.c \
 		entitystatelist.c \
 		gameobject.c \
 		item.c \
@@ -206,8 +207,8 @@ FreeRSC_SOURCES = circularbuffer.c \
 		util.c \
 		world.c
 
-FreeRSC_LDADD = -lm -ldl -lrt ../libs/libev/libevrsc.la
-FreeRSC_LDFLAGS = -L/usr/local/lib -static
+FreeRSC_LDADD = -lm -ldl -lrt -lgmp ../libs/libev/libevrsc.la
+FreeRSC_LDFLAGS = -L/usr/local/lib
 all: all-am
 
 .SUFFIXES:
@@ -298,6 +299,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/circularbuffer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/client.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clientupdater.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dataoperations.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/entitystatelist.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gameobject.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/item.Po@am__quote@

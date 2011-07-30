@@ -3,6 +3,7 @@ bin_PROGRAMS = FreeRSC
 FreeRSC_SOURCES = circularbuffer.c \
 		client.c \
 		clientupdater.c \
+		dataoperations.c \
 		entitystatelist.c \
 		gameobject.c \
 		item.c \
@@ -15,6 +16,6 @@ FreeRSC_SOURCES = circularbuffer.c \
 		util.c \
 		world.c
 
-FreeRSC_LDADD = -lm -ldl -lrt ../libs/libev/libevrsc.la
+FreeRSC_LDADD = -lm -ldl -lrt -lgmp ../libs/libev/libevrsc.la
 
-FreeRSC_LDFLAGS = -L/usr/local/lib -static
+FreeRSC_LDFLAGS = -L/usr/local/lib

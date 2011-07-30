@@ -59,7 +59,7 @@ am_FreeRSCUnitTests_OBJECTS = AllTests.$(OBJEXT) CuTest.$(OBJEXT) \
 	player.$(OBJEXT) PlayerTests.$(OBJEXT) gameobject.$(OBJEXT) \
 	GameObjectTests.$(OBJEXT) item.$(OBJEXT) ItemTests.$(OBJEXT) \
 	npc.$(OBJEXT) NpcTests.$(OBJEXT) clientupdater.$(OBJEXT) \
-	ClientUpdaterTests.$(OBJEXT)
+	ClientUpdaterTests.$(OBJEXT) EncryptionTests.$(OBJEXT)
 FreeRSCUnitTests_OBJECTS = $(am_FreeRSCUnitTests_OBJECTS)
 FreeRSCUnitTests_DEPENDENCIES = ../libs/libev/libevrsc.la
 FreeRSCUnitTests_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -218,10 +218,11 @@ FreeRSCUnitTests_SOURCES = AllTests.c \
 			../src/npc.c \
 			NpcTests.c \
 			../src/clientupdater.c \
-			ClientUpdaterTests.c
+			ClientUpdaterTests.c \
+			EncryptionTests.c
 
-FreeRSCUnitTests_LDADD = -lrt ../libs/libev/libevrsc.la
-FreeRSCUnitTests_LDFLAGS = -L/usr/local/lib -static
+FreeRSCUnitTests_LDADD = -lrt -lgmp ../libs/libev/libevrsc.la
+FreeRSCUnitTests_LDFLAGS = -static -L/usr/local/lib
 all: all-am
 
 .SUFFIXES:
@@ -314,6 +315,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ClientTests.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ClientUpdaterTests.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CuTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/EncryptionTests.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/EntityStateListTests.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GameObjectTests.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ItemTests.Po@am__quote@

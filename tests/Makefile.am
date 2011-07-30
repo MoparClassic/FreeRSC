@@ -23,7 +23,8 @@ FreeRSCUnitTests_SOURCES = AllTests.c \
 			../src/npc.c \
 			NpcTests.c \
 			../src/clientupdater.c \
-			ClientUpdaterTests.c
+			ClientUpdaterTests.c \
+			EncryptionTests.c
 
-FreeRSCUnitTests_LDADD = -lrt ../libs/libev/libevrsc.la
-FreeRSCUnitTests_LDFLAGS = -L/usr/local/lib -static
+FreeRSCUnitTests_LDADD = -lrt -lgmp ../libs/libev/libevrsc.la
+FreeRSCUnitTests_LDFLAGS = -static -L/usr/local/lib
