@@ -76,3 +76,11 @@ int eslist_changed(eslist_t *sl)
     return linkedlist_size(&sl->entities_to_remove) ||
            linkedlist_size(&sl->new_entities);
 }
+
+int eslist_clear(eslist_t *sl)
+{
+    linkedlist_clear(&sl->entities_to_remove);
+    linkedlist_clear(&sl->known_entities);
+    linkedlist_clear(&sl->new_entities);
+    return 1;
+}

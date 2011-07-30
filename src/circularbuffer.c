@@ -1,4 +1,5 @@
 #include "circularbuffer.h"
+#include "util.h"
 
 const int BIT_MASK[] = {
     0, 0x1, 0x3, 0x7,
@@ -122,6 +123,12 @@ int cbuffer_send(cbuffer_t *cbuf)
         datlen = cbuf->write_offset;
         send(cbuf->fd, cbuf->buffer, datlen, 0);
     }
+    return 1;
+}
+
+int cbuffer_send_data(cbuffer_t *cbuf, void *data, size_t sz)
+{
+    send(cbuf->fd, data, sz, 0);
     return 1;
 }
 
@@ -273,4 +280,35 @@ uint64_t cbuffer_read_long(cbuffer_t *cbuf)
     value <<= 32;
     value |= cbuffer_read_int(cbuf);
     return value;
+}
+
+int cbuffer_read_fixedlen_string(cbuffer_t *cbuf, int readlen, char *dst, size_t siz)
+{
+    char *d = dst;
+    size_t n = siz;
+    int nr = readlen;
+    int read = 0;
+
+    if (n != 0 && nr >= 0) {
+        while (--n != 0 && --nr >= 0) {
+            ++read;
+            if ( (*d++ = cbuffer_read_byte(cbuf)) == '\0') {
+                break;
+            }
+        }
+    }
+
+    if (n == 0) {
+        if (siz != 0) {
+            *d = '\0';
+        }
+    }
+
+    return read;
+}
+
+void cbuffer_skip(cbuffer_t *cbuf, int skip)
+{
+    cbuf->read_offset += skip;
+    return 1;
 }

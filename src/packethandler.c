@@ -1,6 +1,7 @@
 #include "packethandler.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 int (*packet_decoder_table[256])(client_t *client, unsigned int opcode,
                                  int packet_size) = {
@@ -36,7 +37,7 @@ int (*packet_decoder_table[256])(client_t *client, unsigned int opcode,
     &discard, /* 29 */
     &discard, /* 30 */
     &discard, /* 31 */
-    &discard, /* 32 */
+    &session_request, /* 32 */
     &discard, /* 33 */
     &discard, /* 34 */
     &discard, /* 35 */
@@ -271,6 +272,7 @@ print_payload(client_t *client, unsigned int opcode, int packet_size)
     int i;
 
     cbuffer_mark_read_position(cbuf);
+    printf("Packet details: opcode=%d, size=%d\n", opcode, packet_size);
     printf("Payload: ");
     for (i = 0; i < packet_size; ++i) {
         printf("%d ", cbuf->buffer[cbuf->read_offset++]);
@@ -285,14 +287,39 @@ int discard(client_t *client, unsigned int opcode, int packet_size)
 {
     cbuffer_t *cbuf = &client->in_buffer;
 
-    printf("Discard handler: opcode %d size %d\n", opcode, packet_size);
     print_payload(client, opcode, packet_size);
     cbuf->read_offset += packet_size;
     return 1;
 }
 
+int session_request(client_t *client, unsigned int opcode, int packet_size)
+{
+    cbuffer_t *inbuf = &client->in_buffer;
+    cbuffer_t *outbuf = &client->out_buffer;
+    uint64_t randval = 0LL;
+    int psiz = packet_size - 1; /* We skip the first byte; we don't use it */
+    char str[31];
+
+    print_payload(client, opcode, packet_size);
+
+    memset(str, '\0', sizeof(str));
+    cbuffer_skip(inbuf, 1); /* First byte skipped */
+    cbuffer_read_fixedlen_string(inbuf, psiz, str, sizeof(str));
+
+    printf("String received: '%s'\n", str);
+
+    /* Generate a random 64 bit integer to send to the client */
+    randval = rand();
+    randval <<= 32;
+    randval |= rand();
+
+    cbuffer_send_data(outbuf, &randval, sizeof(randval));
+    return 1;
+}
+
 int login(client_t *client, unsigned int opcode, int packet_size)
 {
+    cbuffer_t *cbuf = &client->in_buffer;
     return 0;
 }
 

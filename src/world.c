@@ -34,7 +34,19 @@ get_unused_player_slot()
 
 void remove_player(player_t *player)
 {
-    memset(player, 0, sizeof(player_t));
+    linkedlist_clear(&player->bubbles_to_display);
+    linkedlist_clear(&player->chat_messages_to_display);
+    linkedlist_clear(&player->hit_updates_to_display);
+    linkedlist_clear(&player->projectiles_to_display);
+    linkedlist_clear(&player->appearance_updates_to_display);
+    linkedlist_clear(&player->npc_hit_updates_to_display);
+    linkedlist_clear(&player->npc_chat_messages_to_display);
+
+    linkedlist_clear(&player->known_appearance_ids);
+    eslist_clear(&player->watched_players);
+    eslist_clear(&player->watched_objects);
+    eslist_clear(&player->watched_items);
+    eslist_clear(&player->watched_npcs);
     player->index = UNUSED;
 }
 

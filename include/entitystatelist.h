@@ -26,6 +26,7 @@ int eslist_remove(eslist_t *sl, void *entity);
 int eslist_isremoving(eslist_t *sl, void *entity);
 int eslist_update(eslist_t *sl);
 int eslist_changed(eslist_t *sl);
+int eslist_clear(eslist_t *sl);
 
 #endif	/* ENTITYSTATELIST_H */
 

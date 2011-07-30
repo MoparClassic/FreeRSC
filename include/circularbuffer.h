@@ -53,6 +53,7 @@ int cbuffer_mark_read_position(cbuffer_t *cbuf);
 int cbuffer_rewind_read_position(cbuffer_t *cbuf);
 int cbuffer_available(cbuffer_t *cbuf);
 int cbuffer_send(cbuffer_t *cbuf);
+int cbuffer_send_data(cbuffer_t *cbuf, void *data, size_t sz);
 
 int cbuffer_write_byte(cbuffer_t *cbuf, uint8_t value);
 int cbuffer_write_short(cbuffer_t *cbuf, uint16_t value);
@@ -68,5 +69,8 @@ uint8_t cbuffer_read_byte(cbuffer_t *cbuf);
 uint16_t cbuffer_read_short(cbuffer_t *cbuf);
 uint32_t cbuffer_read_int(cbuffer_t *cbuf);
 uint64_t cbuffer_read_long(cbuffer_t *cbuf);
+int cbuffer_read_fixedlen_string(cbuffer_t *cbuf, int readlen,
+                                 char *dst, size_t siz);
+void cbuffer_skip(cbuffer_t *cbuf, int skip);
 
 #endif	/* CIRCULARBUFFER_H */

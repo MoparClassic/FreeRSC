@@ -1,5 +1,7 @@
 #include <netinet/in.h>
 #include <ev.h>
+#include <stdlib.h>
+#include <time.h>
 
 #include "client.h"
 #include "clientupdater.h"
@@ -22,6 +24,8 @@ int main(int argc, char *argv[])
     struct ev_timer game_pulse_timer;
     struct sockaddr_in addr;
     int sd;
+
+    srand(time(NULL));
 
     server_init();
 

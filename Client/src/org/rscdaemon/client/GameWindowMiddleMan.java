@@ -37,10 +37,6 @@ public abstract class GameWindowMiddleMan extends GameWindow {
             streamClass = new StreamClass(makeSocket(Config.SERVER_IP, Config.SERVER_PORT), this);
             streamClass.maxPacketReadCount = maxPacketReadCount;
             long l = DataOperations.stringLength12ToLong(user);
-            streamClass.createPacket(200);
-            streamClass.add4ByteInt(0xAABBCCDD);
-            streamClass.add4ByteInt(0xDDCCBBAA);
-            streamClass.finalisePacket();
             streamClass.createPacket(32);
             streamClass.addByte((int) (l >> 16 & 31L));
             streamClass.addString(this.getClass().getName().toUpperCase());

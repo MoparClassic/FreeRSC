@@ -14,6 +14,7 @@ extern int (*packet_decoder_table[256])(client_t *,
                                         unsigned int opcode, int packet_size);
 
 int discard(client_t *, unsigned int opcode, int packet_size);
+int session_request(client_t *, unsigned int opcode, int packet_size);
 int login(client_t *, unsigned int opcode, int packet_size);
 int logout(client_t *, unsigned int opcode, int packet_size);
 

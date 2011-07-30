@@ -10,6 +10,7 @@
 
 #include "client.h"
 #include "common.h"
+#include "entitystatelist.h"
 #include "gameobject.h"
 #include "item.h"
 #include "npc.h"

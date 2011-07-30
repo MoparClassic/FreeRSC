@@ -29,6 +29,7 @@ typedef struct appearance_mapping appearance_mapping_t;
 struct player {
     const char *username;
     uint64_t username_hash;
+    uint64_t server_key;
     uint32_t flags;
     uint32_t appearance_id;
     uint16_t index;
