@@ -1,8 +1,9 @@
 #include "packethandler.h"
-
 #include "dataoperations.h"
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 static int discard(client_t *, uint32_t, uint32_t);
 static int session_request(client_t *, uint32_t, uint32_t);
@@ -333,7 +334,7 @@ int (*packet_decoder_table[256])(client_t *client, uint32_t opcode,
     &sell_item, /* 255 */
 };
 
-//#define PRINT_PAYLOAD
+/* #define PRINT_PAYLOAD */
 static int
 print_payload(client_t *client, unsigned int opcode, int packet_size)
 {

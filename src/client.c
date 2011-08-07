@@ -1,6 +1,8 @@
 #include "client.h"
+#include "common.h"
 
-#include <stdio.h>
+#include <ev.h>
+#include <string.h>
 
 #ifdef STATIC_ALLOC_CLIENTS
 
@@ -27,7 +29,6 @@ void client_init()
 {
     memset(client_ref_list, 0, sizeof (client_ref_list));
     memset(watcher_ref_list, 0, sizeof (watcher_ref_list));
-    printf("Client structures available: %d\n", MAX_CLIENTS);
 }
 #endif
 
@@ -44,9 +45,6 @@ client_new()
         i %= MAX_CLIENTS;
         cref = &client_ref_list[i + 1];
         if (cref->used == UNUSED) {
-#if UNIT_TESTING_VERBOSITY_LEVEL >= 2
-            printf("Client found! ID=%d\n", i + 1);
-#endif
             cref->used = IN_USE;
             client = &cref->client;
             memset(client, 0, sizeof (client_t));
@@ -86,9 +84,6 @@ ev_watcher_new() {
         i %= MAX_CLIENTS;
         ref = &watcher_ref_list[i + 1];
         if (ref->used == UNUSED) {
-#if UNIT_TESTING_VERBOSITY_LEVEL >= 2
-            printf("ev_watcher found! ID=%d\n", i + 1);
-#endif
             ref->used = IN_USE;
             watcher = &ref->watcher;
             memset(watcher, 0, sizeof (struct ev_io));

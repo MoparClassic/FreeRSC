@@ -8,13 +8,9 @@
 #ifndef UTIL_H
 #define	UTIL_H
 
+#include "config.h"
 #include <stdint.h>
 #include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <sys/time.h>
-
-#include "config.h"
 
 extern uint64_t timestamp;
 

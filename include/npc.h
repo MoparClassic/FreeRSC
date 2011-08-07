@@ -8,7 +8,7 @@
 #ifndef NPC_H
 #define	NPC_H
 
-#include "common.h"
+#include <stdint.h>
 
 #define MAX_NPC_DEFINITIONS 1500
 
@@ -44,9 +44,6 @@ struct npc {
 
 extern npcdef_t npc_definitions[MAX_NPC_DEFINITIONS];
 
-int npc_set_flags(npc_t *npc, int flags);
-int npc_unset_flags(npc_t *npc, int flags);
-int npc_reset_moved(npc_t *npc);
 int npc_update_position(npc_t *npc);
 int npc_update_appearance_id(npc_t *npc);
 int npc_aggressive(npc_t *npc);

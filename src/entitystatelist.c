@@ -1,7 +1,12 @@
 #include "entitystatelist.h"
 
+#include <assert.h>
+
 int eslist_add(eslist_t *sl, void *entity)
 {
+    assert(sl); /* sl must not be a NULL pointer */
+    assert(entity); /* entity must not be a NULL pointer */
+    
     linkedlist_prepend(&sl->new_entities, entity);
     return 1;
 }
@@ -9,6 +14,9 @@ int eslist_add(eslist_t *sl, void *entity)
 int eslist_add_list(eslist_t *sl, linkedlist_t *l)
 {
     lnode_t *node;
+
+    assert(sl); /* sl must not be a NULL pointer */
+    assert(l); /* l must not be a NULL pointer */
 
     LINKEDLIST_FOREACH(node, l) {
         linkedlist_prepend(&sl->new_entities, node->data);
@@ -19,6 +27,9 @@ int eslist_add_list(eslist_t *sl, linkedlist_t *l)
 int eslist_contains(eslist_t *sl, void *entity)
 {
     lnode_t *node;
+
+    assert(sl); /* sl must not be a NULL pointer */
+    assert(entity); /* entity must not be a NULL pointer */
 
     LINKEDLIST_FOREACH(node, &sl->known_entities) {
         if (node->data == entity) {
@@ -37,6 +48,9 @@ int eslist_contains(eslist_t *sl, void *entity)
 
 int eslist_remove(eslist_t *sl, void *entity)
 {
+    assert(sl); /* sl must not be a NULL pointer */
+    assert(entity); /* entity must not be a NULL pointer */
+    
     linkedlist_prepend(&sl->entities_to_remove, entity);
     return 1;
 }
@@ -45,6 +59,9 @@ int eslist_isremoving(eslist_t *sl, void *entity)
 {
     lnode_t *node;
 
+    assert(sl); /* sl must not be a NULL pointer */
+    assert(entity); /* entity must not be a NULL pointer */
+    
     LINKEDLIST_FOREACH(node, &sl->entities_to_remove) {
         if (node->data == entity) {
             return 1;
@@ -58,6 +75,8 @@ int eslist_update(eslist_t *sl)
 {
     lnode_t *node;
 
+    assert(sl); /* sl must not be a NULL pointer */
+    
     LINKEDLIST_FOREACH(node, &sl->entities_to_remove) {
         linkedlist_remove(&sl->known_entities, node->data);
     }
@@ -73,12 +92,15 @@ int eslist_update(eslist_t *sl)
 
 int eslist_changed(eslist_t *sl)
 {
+    assert(sl); /* sl must not be a NULL pointer */
     return linkedlist_size(&sl->entities_to_remove) ||
            linkedlist_size(&sl->new_entities);
 }
 
 int eslist_clear(eslist_t *sl)
 {
+    assert(sl); /* sl must not be a NULL pointer */
+    
     linkedlist_clear(&sl->entities_to_remove);
     linkedlist_clear(&sl->known_entities);
     linkedlist_clear(&sl->new_entities);

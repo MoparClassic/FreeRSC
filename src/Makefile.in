@@ -52,10 +52,11 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_FreeRSC_OBJECTS = circularbuffer.$(OBJEXT) client.$(OBJEXT) \
 	clientupdater.$(OBJEXT) dataoperations.$(OBJEXT) \
-	entitystatelist.$(OBJEXT) gameobject.$(OBJEXT) item.$(OBJEXT) \
-	linkedlist.$(OBJEXT) listener.$(OBJEXT) npc.$(OBJEXT) \
-	packethandler.$(OBJEXT) player.$(OBJEXT) server.$(OBJEXT) \
-	util.$(OBJEXT) world.$(OBJEXT)
+	entitystatelist.$(OBJEXT) entityutil.$(OBJEXT) \
+	gameobject.$(OBJEXT) item.$(OBJEXT) linkedlist.$(OBJEXT) \
+	listener.$(OBJEXT) npc.$(OBJEXT) packethandler.$(OBJEXT) \
+	player.$(OBJEXT) playerutil.$(OBJEXT) server.$(OBJEXT) \
+	tile.$(OBJEXT) util.$(OBJEXT) world.$(OBJEXT)
 FreeRSC_OBJECTS = $(am_FreeRSC_OBJECTS)
 FreeRSC_DEPENDENCIES = ../libs/libev/libevrsc.la
 FreeRSC_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
@@ -196,6 +197,7 @@ FreeRSC_SOURCES = circularbuffer.c \
 		clientupdater.c \
 		dataoperations.c \
 		entitystatelist.c \
+		entityutil.c \
 		gameobject.c \
 		item.c \
 		linkedlist.c \
@@ -203,7 +205,9 @@ FreeRSC_SOURCES = circularbuffer.c \
 		npc.c \
 		packethandler.c \
 		player.c \
+		playerutil.c \
 		server.c \
+		tile.c \
 		util.c \
 		world.c
 
@@ -301,6 +305,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clientupdater.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dataoperations.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/entitystatelist.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/entityutil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gameobject.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/item.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/linkedlist.Po@am__quote@
@@ -308,7 +313,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/npc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/packethandler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/player.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/playerutil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/server.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/world.Po@am__quote@
 

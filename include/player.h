@@ -1,10 +1,10 @@
-#ifndef PLAYER_H
-#define	PLAYER_H
+#ifndef INCLUDED_PLAYER_H
+#define	INCLUDED_PLAYER_H
 
-#include "common.h"
 #include "linkedlist.h"
 #include "entitystatelist.h"
-#include "util.h"
+
+#include <stdint.h>
 
 #define MAX_BANK_SIZE       192
 #define MAX_INVENTORY_SIZE  30
@@ -84,27 +84,13 @@ struct appearance_mapping {
 };
 
 int player_get_crown(player_t *player);
-int player_set_flags(player_t *player, int flags);
-int player_unset_flags(player_t *player, int flags);
-int player_reset_moved(player_t *player);
 int player_update_position(player_t *player);
 int player_update_appearance_id(player_t *player);
 
 int player_revalidate_watched_players(player_t *player);
-int player_revalidate_watched_objects(player_t *player);
-int player_revalidate_watched_items(player_t *player);
-int player_revalidate_watched_npcs(player_t *player);
 int player_update_viewed_players(player_t *player);
-int player_update_viewed_objects(player_t *player);
-int player_update_viewed_items(player_t *player);
-int player_update_viewed_npcs(player_t *player);
-
-int player_get_players_in_view(player_t *player, linkedlist_t *player_list);
-int player_get_objects_in_view(player_t *player, linkedlist_t *object_list);
-int player_get_items_in_view(player_t *player, linkedlist_t *item_list);
-int player_get_npcs_in_view(player_t *player, linkedlist_t *npc_list);
 
 int player_destroy(player_t *player);
 
-#endif	/* PLAYER_H */
+#endif	/* INCLUDED_PLAYER_H */
 

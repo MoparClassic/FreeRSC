@@ -8,10 +8,6 @@
 #ifndef COMMON_H
 #define	COMMON_H
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-
 #define MAX_MAP_WIDTH    944
 #define MAX_MAP_HEIGHT   3776
 

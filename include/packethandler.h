@@ -9,7 +9,7 @@
 #define	PACKET_HANDLER_H
 
 #include "client.h"
-#include "common.h"
+#include <stdint.h>
 
 extern int (*packet_decoder_table[256])(client_t *,
                                         uint32_t opcode, uint32_t psiz);

@@ -51,7 +51,8 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_FreeRSCUnitTests_OBJECTS = AllTests.$(OBJEXT) CuTest.$(OBJEXT) \
-	util.$(OBJEXT) UtilTests.$(OBJEXT) linkedlist.$(OBJEXT) \
+	entityutil.$(OBJEXT) playerutil.$(OBJEXT) util.$(OBJEXT) \
+	UtilTests.$(OBJEXT) linkedlist.$(OBJEXT) \
 	LinkedListTests.$(OBJEXT) entitystatelist.$(OBJEXT) \
 	EntityStateListTests.$(OBJEXT) circularbuffer.$(OBJEXT) \
 	CircularBufferTests.$(OBJEXT) world.$(OBJEXT) \
@@ -194,9 +195,11 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_CFLAGS = -O2 -pedantic -I../libs/libev -DUNIT_TESTING -DUNIT_TESTING_VERBOSITY_LEVEL=1 -DSTATIC_ALLOC_CLIENTS=100 -DSTATIC_ALLOC_LINKEDLIST_NODES=2000 -DMAX_PLAYERS=10
+AM_CFLAGS = -DNDEBUG -O2 -pedantic -I../libs/libev -DUNIT_TESTING -DUNIT_TESTING_VERBOSITY_LEVEL=1 -DSTATIC_ALLOC_CLIENTS=100 -DSTATIC_ALLOC_LINKEDLIST_NODES=2000 -DMAX_PLAYERS=10
 FreeRSCUnitTests_SOURCES = AllTests.c \
 			CuTest.c \
+			../src/entityutil.c \
+			../src/playerutil.c \
 			../src/util.c \
 			UtilTests.c \
 			../src/linkedlist.c \
@@ -328,11 +331,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/client.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clientupdater.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/entitystatelist.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/entityutil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gameobject.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/item.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/linkedlist.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/npc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/player.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/playerutil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/world.Po@am__quote@
 
@@ -356,6 +361,34 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+
+entityutil.o: ../src/entityutil.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT entityutil.o -MD -MP -MF $(DEPDIR)/entityutil.Tpo -c -o entityutil.o `test -f '../src/entityutil.c' || echo '$(srcdir)/'`../src/entityutil.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/entityutil.Tpo $(DEPDIR)/entityutil.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../src/entityutil.c' object='entityutil.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o entityutil.o `test -f '../src/entityutil.c' || echo '$(srcdir)/'`../src/entityutil.c
+
+entityutil.obj: ../src/entityutil.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT entityutil.obj -MD -MP -MF $(DEPDIR)/entityutil.Tpo -c -o entityutil.obj `if test -f '../src/entityutil.c'; then $(CYGPATH_W) '../src/entityutil.c'; else $(CYGPATH_W) '$(srcdir)/../src/entityutil.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/entityutil.Tpo $(DEPDIR)/entityutil.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../src/entityutil.c' object='entityutil.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o entityutil.obj `if test -f '../src/entityutil.c'; then $(CYGPATH_W) '../src/entityutil.c'; else $(CYGPATH_W) '$(srcdir)/../src/entityutil.c'; fi`
+
+playerutil.o: ../src/playerutil.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT playerutil.o -MD -MP -MF $(DEPDIR)/playerutil.Tpo -c -o playerutil.o `test -f '../src/playerutil.c' || echo '$(srcdir)/'`../src/playerutil.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/playerutil.Tpo $(DEPDIR)/playerutil.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../src/playerutil.c' object='playerutil.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o playerutil.o `test -f '../src/playerutil.c' || echo '$(srcdir)/'`../src/playerutil.c
+
+playerutil.obj: ../src/playerutil.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT playerutil.obj -MD -MP -MF $(DEPDIR)/playerutil.Tpo -c -o playerutil.obj `if test -f '../src/playerutil.c'; then $(CYGPATH_W) '../src/playerutil.c'; else $(CYGPATH_W) '$(srcdir)/../src/playerutil.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/playerutil.Tpo $(DEPDIR)/playerutil.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../src/playerutil.c' object='playerutil.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o playerutil.obj `if test -f '../src/playerutil.c'; then $(CYGPATH_W) '../src/playerutil.c'; else $(CYGPATH_W) '$(srcdir)/../src/playerutil.c'; fi`
 
 util.o: ../src/util.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT util.o -MD -MP -MF $(DEPDIR)/util.Tpo -c -o util.o `test -f '../src/util.c' || echo '$(srcdir)/'`../src/util.c

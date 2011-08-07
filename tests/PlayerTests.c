@@ -1,4 +1,6 @@
 #include "PlayerTests.h"
+#include "common.h"
+#include "entityutil.h"
 
 static void
 test_player_get_crown(CuTest *tc)
@@ -22,7 +24,7 @@ test_player_set_flags(CuTest *tc)
 
     for (i = 1; expected < 0xFFFFFFFF; i *= 2) {
         expected = (expected << 1) | 1;
-        player_set_flags(&player, i);
+        ENTITY_SET_FLAGS(&player, i);
         CuAssertIntEquals_Msg(tc, err, expected, player.flags);
     }
 #if UNIT_TESTING_VERBOSITY_LEVEL >= 1
@@ -43,7 +45,7 @@ test_player_unset_flags(CuTest *tc)
     expected = 0xFFFFFFFF;
     for (i = 2147483648u; expected != 0; i -= i / 2) {
         expected >>= 1;
-        player_unset_flags(&player, i);
+        ENTITY_UNSET_FLAGS(&player, i);
         CuAssertIntEquals_Msg(tc, err, expected, player.flags);
     }
 #if UNIT_TESTING_VERBOSITY_LEVEL >= 1
@@ -58,9 +60,9 @@ test_player_reset_moved(CuTest *tc)
     player_t player;
 
     memset(&player, 0, sizeof (player_t));
-    player_set_flags(&player, EF_MOVED);
+    ENTITY_SET_FLAGS(&player, EF_MOVED);
 
-    player_reset_moved(&player);
+    MOB_RESET_MOVED(&player);
     if (EF_MOVED & player.flags) {
         CuFail(tc, err);
     }
@@ -88,10 +90,10 @@ test_player_update_appearance_id(CuTest *tc)
     player_update_appearance_id(&player);
     CuAssertIntEquals_Msg(tc, err, 0, player.appearance_id);
 
-    player_set_flags(&player, EF_APPEARANCE_CHANGED);
+    ENTITY_SET_FLAGS(&player, EF_APPEARANCE_CHANGED);
     player_update_appearance_id(&player);
     CuAssertIntEquals_Msg(tc, err, 1, player.appearance_id);
-    player_unset_flags(&player, EF_APPEARANCE_CHANGED);
+    ENTITY_UNSET_FLAGS(&player, EF_APPEARANCE_CHANGED);
     player_update_appearance_id(&player);
     CuAssertIntEquals_Msg(tc, err, 1, player.appearance_id);
 #if UNIT_TESTING_VERBOSITY_LEVEL >= 1
@@ -109,7 +111,7 @@ test_player_revalidate_watched_players(CuTest *tc)
     eslist_t *watched_players = &player.watched_players;
     int i;
 
-    // Initialise the players we're using for testing
+    /* Initialise the players we're using for testing */
     memset(&player, 0, sizeof (player_t));
     memset(plist, 0, sizeof (plist));
     player.x = 500;
@@ -157,7 +159,7 @@ test_player_revalidate_watched_players(CuTest *tc)
      * and should be marked for removal.
      */
     for (i = 0; i < 5; ++i) {
-        player_set_flags(&plist[i], PF_LOGGED_IN);
+        ENTITY_SET_FLAGS(&plist[i], PF_LOGGED_IN);
         linkedlist_prepend(&watched_players->known_entities, &plist[i]);
     }
     CuAssertIntEquals_Msg(tc, err, 5,
@@ -195,7 +197,7 @@ test_player_revalidate_watched_objects(CuTest *tc)
     eslist_t *watched_objects = &player.watched_objects;
     int i;
 
-    // Initialise the players we're using for testing
+    /* Initialise the players we're using for testing */
     memset(&player, 0, sizeof (player_t));
     memset(olist, 0, sizeof (olist));
     player.x = 500;
@@ -209,7 +211,7 @@ test_player_revalidate_watched_objects(CuTest *tc)
      * Test part one:
      */
     for (i = 0; i < 5; ++i) {
-        gameobject_set_flags(&olist[i], EF_REMOVING);
+        ENTITY_SET_FLAGS(&olist[i], EF_REMOVING);
         linkedlist_prepend(&watched_objects->known_entities, &olist[i]);
     }
     CuAssertIntEquals_Msg(tc, err, 5,
@@ -238,7 +240,7 @@ test_player_revalidate_watched_objects(CuTest *tc)
      * Test part two:
      */
     for (i = 0; i < 5; ++i) {
-        gameobject_unset_flags(&olist[i], EF_REMOVING);
+        ENTITY_UNSET_FLAGS(&olist[i], EF_REMOVING);
         linkedlist_prepend(&watched_objects->known_entities, &olist[i]);
     }
     CuAssertIntEquals_Msg(tc, err, 5,
@@ -277,7 +279,7 @@ test_player_revalidate_watched_items(CuTest *tc)
     eslist_t *watched_items = &player.watched_items;
     int i;
 
-    // Initialise the players we're using for testing
+    /* Initialise the players we're using for testing */
     memset(&player, 0, sizeof (player_t));
     memset(ilist, 0, sizeof (ilist));
     player.x = 500;
@@ -291,7 +293,7 @@ test_player_revalidate_watched_items(CuTest *tc)
      * Test part one:
      */
     for (i = 0; i < 5; ++i) {
-        grounditem_set_flags(&ilist[i], EF_REMOVING);
+        ENTITY_SET_FLAGS(&ilist[i], EF_REMOVING);
         linkedlist_prepend(&watched_items->known_entities, &ilist[i]);
     }
     CuAssertIntEquals_Msg(tc, err, 5,
@@ -320,7 +322,7 @@ test_player_revalidate_watched_items(CuTest *tc)
      * Test part two:
      */
     for (i = 0; i < 5; ++i) {
-        grounditem_unset_flags(&ilist[i], EF_REMOVING);
+        ENTITY_UNSET_FLAGS(&ilist[i], EF_REMOVING);
         linkedlist_prepend(&watched_items->known_entities, &ilist[i]);
     }
     CuAssertIntEquals_Msg(tc, err, 5,
@@ -358,7 +360,7 @@ test_player_revalidate_watched_npcs(CuTest *tc)
     eslist_t *watched_npcs = &player.watched_npcs;
     int i;
 
-    // Initialise the players we're using for testing
+    /* Initialise the players we're using for testing */
     memset(&player, 0, sizeof (player_t));
     memset(nlist, 0, sizeof (nlist));
     player.x = 500;
@@ -372,7 +374,7 @@ test_player_revalidate_watched_npcs(CuTest *tc)
      * Test part one:
      */
     for (i = 0; i < 5; ++i) {
-        npc_set_flags(&nlist[i], EF_REMOVING);
+        ENTITY_SET_FLAGS(&nlist[i], EF_REMOVING);
         linkedlist_prepend(&watched_npcs->known_entities, &nlist[i]);
     }
     CuAssertIntEquals_Msg(tc, err, 5,
@@ -401,7 +403,7 @@ test_player_revalidate_watched_npcs(CuTest *tc)
      * Test part two:
      */
     for (i = 0; i < 5; ++i) {
-        npc_unset_flags(&nlist[i], EF_REMOVING);
+        ENTITY_UNSET_FLAGS(&nlist[i], EF_REMOVING);
         linkedlist_prepend(&watched_npcs->known_entities, &nlist[i]);
     }
     CuAssertIntEquals_Msg(tc, err, 5,
@@ -553,7 +555,7 @@ test_player_update_viewed_players(CuTest *tc)
     player.x = 500;
     player.y = 500;
     for (i = 0; i < 4; ++i) {
-        player_set_flags(&plist[i], PF_LOGGED_IN);
+        ENTITY_SET_FLAGS(&plist[i], PF_LOGGED_IN);
     }
 
     world_set_player_location(&plist[0], 0, 0, 485, 485);
@@ -764,7 +766,6 @@ get_player_test_suite()
     /*
         SUITE_ADD_TEST(suite, &test_player_destroy);
 
-        // The following are static functions in player.c
         SUITE_ADD_TEST(suite, &test_remove_known_appearance);
         SUITE_ADD_TEST(suite, &test_within_range);
         SUITE_ADD_TEST(suite, &test_can_see_item);

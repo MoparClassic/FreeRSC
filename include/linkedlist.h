@@ -8,8 +8,6 @@
 #ifndef LINKEDLIST_H
 #define	LINKEDLIST_H
 
-#include "common.h"
-
 #define LINKEDLIST_FOREACH(item, list) \
     for ((item) = (list)->head; (item); (item) = (item)->next)
 
@@ -23,7 +21,7 @@ struct list_node {
 
 struct linkedlist {
     lnode_t *head;
-    uint32_t size;
+    unsigned int size;
 };
 
 #ifdef STATIC_ALLOC_LINKEDLIST_NODES

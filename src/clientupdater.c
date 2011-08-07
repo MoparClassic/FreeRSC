@@ -5,13 +5,18 @@
 #include "circularbuffer.h"
 #include "client.h"
 #include "common.h"
+#include "entityutil.h"
 #include "gameobject.h"
 #include "linkedlist.h"
 #include "npc.h"
 #include "player.h"
+#include "playerutil.h"
 #include "projectile.h"
 #include "util.h"
 #include "world.h"
+
+#include <assert.h>
+#include <string.h>
 
 static void update_npc_positions();
 static void update_player_positions();
@@ -39,6 +44,7 @@ int send_client_updates()
 
     LINKEDLIST_FOREACH(node, &client_list) {
         client = (client_t *) node->data;
+        assert(client); /* This should never be NULL */
 
         send_player_position_packet(client);
         send_npc_position_packet(client);
@@ -58,7 +64,7 @@ update_npc_positions()
     npc_t *npc;
 
     NPC_LIST_FOREACH(npc) {
-        npc_reset_moved(npc);
+        MOB_RESET_MOVED(npc);
         npc_update_position(npc);
         npc_update_appearance_id(npc);
     }
@@ -73,13 +79,14 @@ update_player_positions()
     LINKEDLIST_FOREACH(node, &client_list) {
         player = ((client_t *) node)->player;
 
-        player_reset_moved(player);
+        MOB_RESET_MOVED(player);
         player_update_position(player);
         player_update_appearance_id(player);
     }
 
     LINKEDLIST_FOREACH(node, &client_list) {
         player = ((client_t *) node)->player;
+        assert(player); /* player should never be NULL */
 
         player_revalidate_watched_players(player);
         player_revalidate_watched_objects(player);
@@ -103,8 +110,6 @@ update_message_queues()
         if (msg == NULL || !(player->flags & PF_LOGGED_IN)) {
             continue;
         }
-
-
     }
 }
 
@@ -118,7 +123,7 @@ update_offers()
         if (!(player->flags & PF_REQUIRES_OFFER_UPDATE)) {
             continue;
         }
-        player_unset_flags(player, PF_REQUIRES_OFFER_UPDATE);
+        ENTITY_UNSET_FLAGS(player, PF_REQUIRES_OFFER_UPDATE);
 
         if (player->flags & PF_TRADING) {
             target = player->trade_target;
@@ -126,7 +131,7 @@ update_offers()
                 continue;
             }
 
-            // TODO: Send trade items to target player
+            /* TODO: Send trade items to target player */
         }
         else if (player->flags & PF_DUELING) {
             target = player->duel_target;
@@ -134,8 +139,8 @@ update_offers()
                 continue;
             }
 
-            // TODO: Send duel settings to the player
-            // TODO: Send duel settings, and offered items to target
+            /* TODO: Send duel settings to the player */
+            /* TODO: Send duel settings, and offered items to target */
         }
     }
 }
@@ -166,19 +171,23 @@ update_collections()
         linkedlist_clear(&p->npc_chat_messages_to_display);
         linkedlist_clear(&p->bubbles_to_display);
 
-        player_unset_flags(p, EF_SPRITE_CHANGED | EF_APPEARANCE_CHANGED);
+        ENTITY_UNSET_FLAGS(p, EF_SPRITE_CHANGED | EF_APPEARANCE_CHANGED);
     }
 
     NPC_LIST_FOREACH(n) {
-        npc_unset_flags(n, EF_SPRITE_CHANGED | EF_APPEARANCE_CHANGED);
+        ENTITY_UNSET_FLAGS(n, EF_SPRITE_CHANGED | EF_APPEARANCE_CHANGED);
     }
 }
 
 static void
 update_timeouts(client_t *client)
 {
-    player_t *p = client->player;
+    player_t *p;
 
+    assert(client);
+    assert(client->player);
+
+    p = client->player;
     if (p->flags & EF_DESTROYED) {
         return;
     }
@@ -192,8 +201,8 @@ update_timeouts(client_t *client)
         }
     }
     else if (timestamp - p->last_moved >= 900000) {
-        // TODO: Send message to player telling them to move
-        player_set_flags(p, PF_WARNED_TO_MOVE);
+        /* TODO: Send message to player telling them to move */
+        ENTITY_SET_FLAGS(p, PF_WARNED_TO_MOVE);
     }
 }
 
@@ -209,6 +218,9 @@ send_player_position_packet(client_t *client)
     player_t *target;
     int px = player->x;
     int py = player->y;
+
+    assert(client); /* This client must not be NULL */
+    assert(player); /* Associated player must not be NULL */
 
     cbuffer_create_frame(cbuf, 145);
     cbuffer_init_bit_access(cbuf);
@@ -270,6 +282,9 @@ send_npc_position_packet(client_t *client)
     int px = player->x;
     int py = player->y;
 
+    assert(client); /* Client must not be NULL */
+    assert(player); /* Associated player must not be NULL */
+
     cbuffer_create_frame(cbuf, 77);
     cbuffer_init_bit_access(cbuf);
     cbuffer_write_bits(cbuf, linkedlist_size(known_npcs), 8);
@@ -323,6 +338,9 @@ send_game_object_position_packet(client_t *client)
     int px = player->x;
     int py = player->y;
 
+    assert(client); /* Client must not be NULL */
+    assert(player); /* Associated player must not be NULL */
+
     cbuffer_create_frame(cbuf, 27);
 
     LINKEDLIST_FOREACH(node, known_objects) {
@@ -367,6 +385,9 @@ send_wall_object_position_packet(client_t *client)
     gameobject_t *go;
     int px = player->x;
     int py = player->y;
+
+    assert(client); /* Client must not be NULL */
+    assert(player); /* Associated player must not be NULL */
 
     cbuffer_create_frame(cbuf, 95);
 
@@ -413,6 +434,9 @@ send_item_position_packet(client_t *client)
     int px = player->x;
     int py = player->y;
 
+    assert(client); /* Client must not be NULL */
+    assert(player); /* Associated player must not be NULL */
+
     cbuffer_create_frame(cbuf, 109);
 
     LINKEDLIST_FOREACH(node, known_items) {
@@ -449,6 +473,9 @@ send_player_update_packet(client_t *client)
     size_t len;
     int i;
 
+    assert(client); /* Client must not be NULL */
+    assert(player); /* Associated player must not be NULL */
+
     update_size = linkedlist_size(&player->bubbles_to_display) +
                   linkedlist_size(&player->chat_messages_to_display) +
                   linkedlist_size(&player->hit_updates_to_display) +
@@ -459,7 +486,7 @@ send_player_update_packet(client_t *client)
         cbuffer_create_frame(cbuf, 53);
         cbuffer_write_short(cbuf, update_size);
 
-        // 1: Bubbles
+        /* 1: Bubbles */
 
         LINKEDLIST_FOREACH(node, &player->bubbles_to_display) {
             bubble = (bubble_t *) node->data;
@@ -468,7 +495,7 @@ send_player_update_packet(client_t *client)
             cbuffer_write_short(cbuf, bubble->item_id);
         }
 
-        // 2: Chat messages
+        /* 2: Chat messages */
 
         LINKEDLIST_FOREACH(node, &player->chat_messages_to_display) {
             chatmsg = (chatmessage_t *) node->data;
@@ -480,7 +507,7 @@ send_player_update_packet(client_t *client)
             cbuffer_write_bytes(cbuf, chatmsg->message, len);
         }
 
-        // 3: Player hit updates
+        /* 3: Player hit updates */
 
         LINKEDLIST_FOREACH(node, &player->hit_updates_to_display) {
             ptarget = (player_t *) node->data;
@@ -491,17 +518,17 @@ send_player_update_packet(client_t *client)
             cbuffer_write_byte(cbuf, ptarget->max_stats[3]);
         }
 
-        // 4: Projectiles
+        /* 4: Projectiles */
 
         LINKEDLIST_FOREACH(node, &player->projectiles_to_display) {
             projectile = (projectile_t *) node->data;
-            if (projectile->victim_type == ENTITY_NPC) { // Npc victim
+            if (projectile->victim_type == ENTITY_NPC) {
                 cbuffer_write_short(cbuf, projectile->caster_index);
                 cbuffer_write_byte(cbuf, 3);
                 cbuffer_write_short(cbuf, projectile->projectile_type);
                 cbuffer_write_short(cbuf, projectile->victim_index);
             }
-            else if (projectile->victim_type == ENTITY_PLAYER) { //Player victim
+            else if (projectile->victim_type == ENTITY_PLAYER) { 
                 cbuffer_write_short(cbuf, projectile->caster_index);
                 cbuffer_write_byte(cbuf, 4);
                 cbuffer_write_short(cbuf, projectile->projectile_type);
@@ -509,15 +536,15 @@ send_player_update_packet(client_t *client)
             }
         }
 
-        // 5: Player appearance updates
+        /* 5: Player appearance updates */
 
         LINKEDLIST_FOREACH(node, &player->appearance_updates_to_display) {
             ptarget = (player_t *) node->data;
             cbuffer_write_short(cbuf, ptarget->index);
             cbuffer_write_byte(cbuf, 5);
-            cbuffer_write_short(cbuf, 0); // Appearance id
+            cbuffer_write_short(cbuf, 0); /* Appearance id */
             cbuffer_write_long(cbuf, ptarget->username_hash);
-            cbuffer_write_byte(cbuf, 12); // Number of items worn
+            cbuffer_write_byte(cbuf, 12); /* Number of items worn */
             for (i = 0; i < 12; ++i) {
                 cbuffer_write_byte(cbuf, ptarget->worn_items[i]);
             }
@@ -546,6 +573,8 @@ send_npc_update_packet(client_t *client)
     npc_t *npc;
     size_t len;
 
+    assert(client); /* Client must not be NULL */
+    assert(player); /* Associated player must not be NULL */
 
     update_size = linkedlist_size(&player->npc_hit_updates_to_display) +
                   linkedlist_size(&player->npc_chat_messages_to_display);

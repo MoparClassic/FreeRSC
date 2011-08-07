@@ -3,7 +3,17 @@
 #include "circularbuffer.h"
 #include "packethandler.h"
 
-int
+#include <assert.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <netinet/in.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <sys/types.h>
+#include <sys/socket.h>
+
+static int
 setnonblock(int fd)
 {
     int flags;
@@ -23,12 +33,15 @@ accept_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
     socklen_t client_len = sizeof (client_addr);
     int client_sd;
 
+    assert(loop); /* loop must not be a NULL pointer */
+    assert(watcher); /* watcher must not be a NULL pointer */
+    
     if (EV_ERROR & revents) {
         perror("got invalid event");
         return;
     }
 
-    // Accept client request
+    /* Accept client request */
     client_sd = accept(watcher->fd,
                        (struct sockaddr *) & client_addr, &client_len);
 
@@ -36,12 +49,12 @@ accept_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
         perror("accept error");
         return;
     }
-    // Set the client socket fd to non-blocking mode
+    /* Set the client socket fd to non-blocking mode */
     setnonblock(client_sd);
 
     printf("Successfully connected with client.\n");
 
-    // Initialize and start watcher to read client requests
+    /* Initialize and start watcher to read client requests */
     client = client_new();
     client->in_buffer.fd = client_sd;
     client->out_buffer.fd = client_sd;
@@ -61,7 +74,10 @@ void read_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
     int opcode;
     int plen;
 
-    // If the event is invalid then there's nothing to do
+    assert(loop); /* loop must not be a NULL pointer */
+    assert(watcher); /* watcher must not be a NULl pointer */
+
+    /* If the event is invalid then there's nothing to do */
     if (EV_ERROR & revents) {
         perror("Invalid read event");
         return;
@@ -81,10 +97,10 @@ void read_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
     read = recv(watcher->fd, &inbuf->buffer[inbuf->write_offset], buf_space, 0);
     if (read < 0) {
         if (errno == EAGAIN) {
-            return; // Nothing to read
+            return; /* Nothing to read */
         }
 
-        // More serious error
+        /* More serious error */
         perror(strerror(errno));
         return;
     }
@@ -93,7 +109,7 @@ void read_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
         return;
     }
 
-    // Some data was read into the buffer, so increase the write ptr
+    /* Some data was read into the buffer, so increase the write ptr */
     inbuf->write_offset += read;
 
     printf("Data received: %d\n", read);
@@ -111,7 +127,6 @@ void read_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
         read = recv(watcher->fd, &inbuf->buffer[inbuf->write_offset],
                     buf_space - read, 0);
 
-        // Check
         if (read < 0) {
             if (errno != EAGAIN) {
                 perror(strerror(errno));
@@ -140,7 +155,7 @@ void read_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
             plen = cbuffer_read_short(inbuf);
             if (avail - 2 >= plen) {
                 opcode = cbuffer_read_byte(inbuf);
-                --plen; // Minus one because we just read the opcode
+                --plen; /* Minus one because we just read the opcode */
                 (*packet_decoder_table[opcode])(client, opcode, plen);
                 continue;
             }
@@ -158,6 +173,9 @@ void read_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
 
 void disconnect(struct ev_loop *loop, struct ev_io *watcher)
 {
+    assert(loop); /* loop must not be a NULL pointer */
+    assert(watcher); /* watcher must not be a NULL pointer */
+    
     ev_io_stop(loop, watcher);
     client_free((client_t *) watcher->attachment);
     ev_watcher_free(watcher);

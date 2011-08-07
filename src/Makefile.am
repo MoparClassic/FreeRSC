@@ -5,6 +5,7 @@ FreeRSC_SOURCES = circularbuffer.c \
 		clientupdater.c \
 		dataoperations.c \
 		entitystatelist.c \
+		entityutil.c \
 		gameobject.c \
 		item.c \
 		linkedlist.c \
@@ -12,7 +13,9 @@ FreeRSC_SOURCES = circularbuffer.c \
 		npc.c \
 		packethandler.c \
 		player.c \
+		playerutil.c \
 		server.c \
+		tile.c \
 		util.c \
 		world.c
 

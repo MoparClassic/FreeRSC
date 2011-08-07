@@ -5,26 +5,22 @@
  * Created on 13 July 2011, 3:57 PM
  */
 
-#ifndef CIRCULARBUFFER_H
-#define	CIRCULARBUFFER_H
+#ifndef INCLUDED_CIRCULARBUFFER_H
+#define	INCLUDED_CIRCULARBUFFER_H
 
-#define NDEBUG
+#include <stdint.h>
+#include <stdlib.h>
+
 #ifdef UNIT_TESTING
 #define BUFFER_SIZE 15
 #else
 #define BUFFER_SIZE 4096
-#undef NDEBUG
 #endif
-
-#include <assert.h>
-#include <stdint.h>
-#include <string.h>
-#include <sys/socket.h>
 
 #define WRAP_WRITE_PTR(x, y) ((x) % (y))
 
-#define CBUFFER_FOREACH(e, cbuf)                              \
-    for ((cbuf)->iter = (cbuf)->buffer, (e) = (cbuf)->iter;   \
+#define CBUFFER_FOREACH(e, cbuf)                               \
+    for ((cbuf)->iter = (cbuf)->buffer, (e) = (cbuf)->iter;    \
          (cbuf)->iter < (cbuf)->buffer + BUFFER_SIZE;          \
          (e) = ++(cbuf)->iter)
 
@@ -42,13 +38,6 @@ struct circular_buffer {
 };
 
 int cbuffer_create_frame(cbuffer_t *cbuf, uint32_t opcode);
-/*
-int cbuffer_create_frame_size_byte(cbuffer_t *cbuf, uint32_t opcode);
-int cbuffer_create_frame_size_short(cbuffer_t *cbuf, uint32_t opcode);
-int cbuffer_end_frame_size_byte(cbuffer_t *cbuf);
-int cbuffer_end_frame_size_short(cbuffer_t *cbuf);
- */
-
 int cbuffer_mark_read_position(cbuffer_t *cbuf);
 int cbuffer_rewind_read_position(cbuffer_t *cbuf);
 int cbuffer_available(cbuffer_t *cbuf);
@@ -74,4 +63,4 @@ int cbuffer_read_fixedlen_string(cbuffer_t *cbuf, int readlen,
                                  char *dst, size_t siz);
 void cbuffer_skip(cbuffer_t *cbuf, int skip);
 
-#endif	/* CIRCULARBUFFER_H */
+#endif	/* INCLUDED_CIRCULARBUFFER_H */

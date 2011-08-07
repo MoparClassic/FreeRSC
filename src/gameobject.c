@@ -1,24 +1,18 @@
 #include "gameobject.h"
+#include "common.h"
+
+#include <assert.h>
 
 gameobjectdef_t gameobject_definitions[MAX_GAMEOBJECT_DEFINITIONS];
-
-int gameobject_set_flags(gameobject_t *go, int flags)
-{
-    go->flags |= flags;
-    return 1;
-}
-
-int gameobject_unset_flags(gameobject_t *go, int flags)
-{
-    go->flags &= ~flags;
-    return 1;
-}
 
 int gameobject_isontile(gameobject_t *go, int x, int y)
 {
     gameobjectdef_t *godef = &gameobject_definitions[go->object_id];
     int width;
     int height;
+
+    assert(x >= 0 && x < MAX_MAP_WIDTH);
+    assert(y >= 0 && y < MAX_MAP_HEIGHT);
 
     if (godef->type == 1) {
         width = 1;
@@ -44,12 +38,12 @@ int gameobject_isontile(gameobject_t *go, int x, int y)
 
 int gameobject_get_type(int go_id)
 {
-    gameobjectdef_t *godef = &gameobject_definitions[go_id];
-    return godef->type;
+    assert(go_id >= 0 && go_id < MAX_GAMEOBJECT_DEFINITIONS);
+    return gameobject_definitions[go_id].type;
 }
 
 int gameobject_get_dir(int go_id)
 {
-    gameobjectdef_t *godef = &gameobject_definitions[go_id];
-    return godef->direction;
+    assert(go_id >= 0 && go_id < MAX_GAMEOBJECT_DEFINITIONS);
+    return gameobject_definitions[go_id].direction;
 }

@@ -1,6 +1,10 @@
 #include "circularbuffer.h"
 #include "util.h"
 
+#include <assert.h>
+#include <string.h>
+#include <sys/socket.h>
+
 const int BIT_MASK[] = {
     0, 0x1, 0x3, 0x7,
     0xf, 0x1f, 0x3f, 0x7f,
@@ -14,71 +18,34 @@ const int BIT_MASK[] = {
 
 int cbuffer_create_frame(cbuffer_t *cbuf, uint32_t opcode)
 {
-    cbuf->start_offset = cbuffer_write_short(cbuf, 0); // Placeholder for size
+    assert(cbuf);
+    assert(opcode >= 0 && opcode <= 255);
+    
+    cbuf->start_offset = cbuffer_write_short(cbuf, 0); /* Size placeholder */
     cbuffer_write_byte(cbuf, opcode);
     return 1;
 }
 
-/*
-int cbuffer_create_frame_size_byte(cbuffer_t *cbuf, uint32_t opcode) {
-    cbuf->start_offset = cbuffer_write_byte(cbuf, opcode);
-    cbuffer_write_byte(cbuf, 0); // Placeholder byte for size
-    return 1;
-}
-
-int cbuffer_create_frame_size_short(cbuffer_t *cbuf, uint32_t opcode) {
-    cbuf->start_offset = cbuffer_write_byte(cbuf, opcode);
-    cbuffer_write_short(cbuf, 0); // Placeholder short for size
-    return 1;
-}
-
-int cbuffer_end_frame_size_byte(cbuffer_t *cbuf) {
-    int size;
-    int size_idx;
-
-    if (cbuf->write_offset > cbuf->start_offset) {
-        size = cbuf->write_offset - cbuf->start_offset - 2;
-    } else {
-        size = cbuf->write_offset + BUFFER_SIZE - cbuf->start_offset - 2;
-    }
-
-    size_idx = (cbuf->start_offset + 1) % BUFFER_SIZE;
-    cbuf->buffer[size_idx] = (uint8_t) size;
-    return 1;
-}
-
-int cbuffer_end_frame_size_short(cbuffer_t *cbuf) {
-    int size;
-    int size_idx;
-
-    if (cbuf->write_offset > cbuf->start_offset) {
-        size = cbuf->write_offset - cbuf->start_offset - 3;
-    } else {
-        size = cbuf->write_offset + BUFFER_SIZE - cbuf->start_offset - 3;
-    }
-
-    size_idx = (cbuf->start_offset + 1) % BUFFER_SIZE;
-    cbuf->buffer[size_idx] = (uint8_t) (size >> 8);
-    size_idx = (cbuf->start_offset + 2) % BUFFER_SIZE;
-    cbuf->buffer[size_idx] = (uint8_t) size;
-    return 1;
-}
- */
-
 int cbuffer_mark_read_position(cbuffer_t *cbuf)
 {
+    assert(cbuf);
+    
     cbuf->read_marker = cbuf->read_offset;
     return 1;
 }
 
 int cbuffer_rewind_read_position(cbuffer_t *cbuf)
 {
+    assert(cbuf);
+    
     cbuf->read_offset = cbuf->read_marker;
     return 1;
 }
 
 int cbuffer_available(cbuffer_t *cbuf)
 {
+    assert(cbuf);
+    
     if (cbuf->write_offset >= cbuf->read_offset) {
         return cbuf->write_offset - cbuf->read_offset;
     }
@@ -95,9 +62,11 @@ int cbuffer_send(cbuffer_t *cbuf)
     int size_idx;
     void *data;
 
+    assert(cbuf);
+
     if (cbuf->write_offset > cbuf->start_offset) {
         plen = cbuf->write_offset - cbuf->start_offset;
-        payload_len = plen - 2; // Account for the two-byte size header
+        payload_len = plen - 2; /* Account for the two-byte size header */
         size_idx = (cbuf->start_offset + 1) % BUFFER_SIZE;
         cbuf->buffer[size_idx] = (uint8_t) (payload_len >> 8);
         size_idx = (cbuf->start_offset + 2) % BUFFER_SIZE;
@@ -109,7 +78,7 @@ int cbuffer_send(cbuffer_t *cbuf)
     }
     else {
         plen = cbuf->write_offset + BUFFER_SIZE - cbuf->start_offset;
-        payload_len = plen - 2; // Account for the two-byte size header
+        payload_len = plen - 2; /* Account for the two-byte size header */
         size_idx = (cbuf->start_offset + 1) % BUFFER_SIZE;
         cbuf->buffer[size_idx] = (uint8_t) (payload_len >> 8);
         size_idx = (cbuf->start_offset + 2) % BUFFER_SIZE;
@@ -128,17 +97,19 @@ int cbuffer_send(cbuffer_t *cbuf)
 
 int cbuffer_send_data(cbuffer_t *cbuf, void *data, size_t sz)
 {
+    assert(cbuf);
+    assert(data);
+    
     send(cbuf->fd, data, sz, 0);
     return 1;
 }
 
 int cbuffer_write_byte(cbuffer_t *cbuf, uint8_t value)
 {
+    assert(cbuf);
+    
     cbuf->write_offset =
         WRAP_WRITE_PTR(cbuf->write_offset, BUFFER_SIZE);
-#if UNIT_TESTING_VERBOSITY_LEVEL == 3
-    printf("\tValue: %d Offset: %d\n", value, cbuf->write_offset);
-#endif
     cbuf->buffer[cbuf->write_offset] = value;
     return cbuf->write_offset++;
 }
@@ -146,9 +117,9 @@ int cbuffer_write_byte(cbuffer_t *cbuf, uint8_t value)
 int cbuffer_write_short(cbuffer_t *cbuf, uint16_t value)
 {
     int ret;
-#if UNIT_TESTING_VERBOSITY_LEVEL == 3
-    printf("Writing short: %d\n", value);
-#endif
+
+    assert(cbuf);
+
     ret = cbuffer_write_byte(cbuf, (uint8_t) (value >> 8));
     cbuffer_write_byte(cbuf, (uint8_t) value);
     return ret;
@@ -156,9 +127,8 @@ int cbuffer_write_short(cbuffer_t *cbuf, uint16_t value)
 
 int cbuffer_write_int(cbuffer_t *cbuf, uint32_t value)
 {
-#if UNIT_TESTING_VERBOSITY_LEVEL == 3
-    printf("Writing int: %d\n", value);
-#endif
+    assert(cbuf);
+    
     cbuffer_write_byte(cbuf, (uint8_t) (value >> 24));
     cbuffer_write_byte(cbuf, (uint8_t) (value >> 16));
     cbuffer_write_byte(cbuf, (uint8_t) (value >> 8));
@@ -168,9 +138,8 @@ int cbuffer_write_int(cbuffer_t *cbuf, uint32_t value)
 
 int cbuffer_write_long(cbuffer_t *cbuf, uint64_t value)
 {
-#if UNIT_TESTING_VERBOSITY_LEVEL == 3
-    printf("Writing long: %llu\n", value);
-#endif
+    assert(cbuf);
+    
     cbuffer_write_byte(cbuf, (uint8_t) (value >> 56));
     cbuffer_write_byte(cbuf, (uint8_t) (value >> 48));
     cbuffer_write_byte(cbuf, (uint8_t) (value >> 40));
@@ -187,6 +156,9 @@ int cbuffer_write_bytes(cbuffer_t *cbuf, void *data, size_t sz)
     char *d = data;
     int i;
 
+    assert(cbuf);
+    assert(data);
+
     for (i = 0; i < sz; ++i) {
         cbuffer_write_byte(cbuf, *d++);
     }
@@ -195,16 +167,22 @@ int cbuffer_write_bytes(cbuffer_t *cbuf, void *data, size_t sz)
 
 void cbuffer_init_bit_access(cbuffer_t *cbuf)
 {
+    assert(cbuf);
+    
     cbuf->bit_index = cbuf->write_offset * 8;
 }
 
 void cbuffer_finish_bit_access(cbuffer_t *cbuf)
 {
+    assert(cbuf);
+    
     cbuf->write_offset = (cbuf->bit_index + 7) / 8;
 }
 
 void cbuffer_write_bit(cbuffer_t *cbuf, uint32_t value)
 {
+    assert(cbuf);
+    
     cbuffer_write_bits(cbuf, value ? 1 : 0, 1);
 }
 
@@ -214,6 +192,7 @@ void cbuffer_write_bits(cbuffer_t *cbuf, uint32_t value, uint32_t num_bits)
     int bit_ofs;
     uint8_t c;
 
+    assert(cbuf);
     assert(num_bits >= 0 && num_bits <= 32);
 
     byte_pos = (cbuf->bit_index >> 3) % BUFFER_SIZE;
@@ -246,6 +225,9 @@ void cbuffer_write_bits(cbuffer_t *cbuf, uint32_t value, uint32_t num_bits)
 uint8_t cbuffer_read_byte(cbuffer_t *cbuf)
 {
     uint8_t ret;
+
+    assert(cbuf);
+    
     cbuf->read_offset = WRAP_WRITE_PTR(cbuf->read_offset, BUFFER_SIZE);
     ret = cbuf->buffer[cbuf->read_offset];
     ++cbuf->read_offset;
@@ -256,6 +238,8 @@ uint16_t cbuffer_read_short(cbuffer_t *cbuf)
 {
     uint16_t value;
 
+    assert(cbuf);
+    
     value = cbuffer_read_byte(cbuf) << 8;
     value |= cbuffer_read_byte(cbuf);
     return value;
@@ -264,6 +248,8 @@ uint16_t cbuffer_read_short(cbuffer_t *cbuf)
 uint32_t cbuffer_read_int(cbuffer_t *cbuf)
 {
     uint32_t value;
+
+    assert(cbuf);
 
     value = cbuffer_read_byte(cbuf) << 24;
     value |= cbuffer_read_byte(cbuf) << 16;
@@ -276,6 +262,8 @@ uint64_t cbuffer_read_long(cbuffer_t *cbuf)
 {
     uint64_t value;
 
+    assert(cbuf);
+
     value = cbuffer_read_int(cbuf);
     value <<= 32;
     value |= cbuffer_read_int(cbuf);
@@ -287,6 +275,9 @@ int cbuffer_read_bytes(cbuffer_t *cbuf, uint8_t *dst, size_t siz)
     uint8_t *d = dst;
     int i;
 
+    assert(cbuf);
+    assert(dst);
+
     for (i = 0; i < siz; ++i) {
         *d++ = cbuffer_read_byte(cbuf);
     }
@@ -294,12 +285,16 @@ int cbuffer_read_bytes(cbuffer_t *cbuf, uint8_t *dst, size_t siz)
     return d - dst;
 }
 
-int cbuffer_read_fixedlen_string(cbuffer_t *cbuf, int readlen, char *dst, size_t siz)
+int cbuffer_read_fixedlen_string(cbuffer_t *cbuf,
+        int readlen, char *dst, size_t siz)
 {
     char *d = dst;
     size_t n = siz;
     int nr = readlen + 1;
     int read = 0;
+
+    assert(cbuf);
+    assert(dst);
 
     if (n != 0 && nr != 0) {
         while (--n != 0 && --nr != 0) {
@@ -327,6 +322,8 @@ int cbuffer_read_fixedlen_string(cbuffer_t *cbuf, int readlen, char *dst, size_t
 
 void cbuffer_skip(cbuffer_t *cbuf, int skip)
 {
+    assert(cbuf);
+    
     cbuf->read_offset += skip;
-    return 1;
+    return;
 }

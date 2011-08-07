@@ -1,5 +1,9 @@
 #include "util.h"
 
+#include <string.h>
+#include <time.h>
+#include <sys/time.h>
+
 uint64_t timestamp;
 
 uint64_t

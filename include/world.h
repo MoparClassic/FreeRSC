@@ -8,9 +8,7 @@
 #ifndef WORLD_H
 #define	WORLD_H
 
-#include "client.h"
 #include "common.h"
-#include "entitystatelist.h"
 #include "gameobject.h"
 #include "item.h"
 #include "npc.h"
@@ -28,31 +26,19 @@
 #define MAX_NPCS 6000
 #endif
 
-#define PLAYER_LIST_FOREACH(pptr)                  \
-    for ((pptr) = (player_list + 1);               \
+#define PLAYER_LIST_FOREACH(pptr)                   \
+    for ((pptr) = (player_list + 1);                \
          (pptr) < (player_list + MAX_PLAYERS + 1);  \
          ++(pptr))
 
-#define NPC_LIST_FOREACH(nptr)                     \
-    for ((nptr) = (npc_list + 1);                  \
+#define NPC_LIST_FOREACH(nptr)                      \
+    for ((nptr) = (npc_list + 1);                   \
          (nptr) < (npc_list + MAX_NPCS + 1);        \
          ++(nptr))
-
-typedef struct tile tile_t;
-
-struct tile {
-    linkedlist_t players;
-    linkedlist_t npcs;
-    linkedlist_t items;
-    gameobject_t object;
-    uint8_t map_value;
-    uint8_t object_value;
-};
 
 extern linkedlist_t client_list;
 extern player_t player_list[MAX_PLAYERS + 1];
 extern npc_t npc_list[MAX_NPCS + 1];
-extern tile_t tiles[MAX_MAP_WIDTH][MAX_MAP_HEIGHT];
 
 int world_init();
 

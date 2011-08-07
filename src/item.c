@@ -1,47 +1,35 @@
 #include "item.h"
 
+#include <assert.h>
+
 itemdef_t item_definitions[MAX_ITEM_DEFINITIONS];
-
-int
-grounditem_set_flags(grounditem_t *item, int flags)
-{
-    item->flags |= flags;
-    return 1;
-}
-
-int
-grounditem_unset_flags(grounditem_t *item, int flags)
-{
-    item->flags &= ~flags;
-    return 1;
-}
 
 int
 item_tradeable(int item_id)
 {
-    itemdef_t *idef = &item_definitions[item_id];
-    return idef->flags & IDEF_FLAG_TRADEABLE;
+    assert(item_id >= 0 && item_id < MAX_ITEM_DEFINITIONS);
+    return item_definitions[item_id].flags & IDEF_FLAG_TRADEABLE;
 }
 
 int
 item_stackable(int item_id)
 {
-    itemdef_t *idef = &item_definitions[item_id];
-    return idef->flags & IDEF_FLAG_STACKABLE;
+    assert(item_id >= 0 && item_id < MAX_ITEM_DEFINITIONS);
+    return item_definitions[item_id].flags & IDEF_FLAG_STACKABLE;
 }
 
 int
 item_members(int item_id)
 {
-    itemdef_t *idef = &item_definitions[item_id];
-    return idef->flags & IDEF_FLAG_MEMBERS;
+    assert(item_id >= 0 && item_id < MAX_ITEM_DEFINITIONS);
+    return item_definitions[item_id].flags & IDEF_FLAG_MEMBERS;
 }
 
 int
 item_wieldable(int item_id)
 {
-    itemdef_t *idef = &item_definitions[item_id];
-    return idef->flags & IDEF_FLAG_WIELDABLE;
+    assert(item_id >= 0 && item_id < MAX_ITEM_DEFINITIONS);
+    return item_definitions[item_id].flags & IDEF_FLAG_WIELDABLE;
 }
 
 /**
@@ -51,36 +39,34 @@ item_wieldable(int item_id)
 int
 item_get_sprite(int item_id)
 {
-    itemdef_t *idef = &item_definitions[item_id];
-    return idef->sprite;
+    assert(item_id >= 0 && item_id < MAX_ITEM_DEFINITIONS);
+    return item_definitions[item_id].sprite;
 }
 
 int
 item_set_sprite(int item_id, int sprite)
 {
-    itemdef_t *idef;
+    assert(sprite >= 0 && sprite <= 1023);
 
     if (sprite < 0 || sprite > 1023) {
         return 0;
     }
-
-    idef = &item_definitions[item_id];
-    idef->sprite = sprite;
+    item_definitions[item_id].sprite = sprite;
     return 1;
 }
 
 int
 itemdef_set_flags(int item_id, int flags)
 {
-    itemdef_t *idef = &item_definitions[item_id];
-    idef->flags |= flags;
+    assert(item_id >= 0 && item_id < MAX_ITEM_DEFINITIONS);
+    item_definitions[item_id].flags |= flags;
     return 1;
 }
 
 int
 itemdef_unset_flags(int item_id, int flags)
 {
-    itemdef_t *idef = &item_definitions[item_id];
-    idef->flags &= ~flags;
+    assert(item_id >= 0 && item_id < MAX_ITEM_DEFINITIONS);
+    item_definitions[item_id].flags &= ~flags;
     return 1;
 }

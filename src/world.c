@@ -1,4 +1,8 @@
 #include "world.h"
+#include "tile.h"
+
+#include <assert.h>
+#include <string.h>
 
 linkedlist_t client_list;
 player_t player_list[MAX_PLAYERS + 1];
@@ -34,6 +38,8 @@ get_unused_player_slot()
 
 void remove_player(player_t *player)
 {
+    assert(player); /* player must not be a NULL pointer */
+    
     linkedlist_clear(&player->bubbles_to_display);
     linkedlist_clear(&player->chat_messages_to_display);
     linkedlist_clear(&player->hit_updates_to_display);
@@ -72,6 +78,8 @@ get_unused_npc_slot()
 
 void remove_npc(npc_t *npc)
 {
+    assert(npc); /* npc must not be a NULL pointer */
+    
     memset(npc, 0, sizeof(npc_t));
     npc->index = UNUSED;
 }
@@ -109,8 +117,19 @@ int world_unregister_npc(npc_t *npc)
 int world_set_player_location(player_t *player, int oldx, int oldy,
                               int newx, int newy)
 {
-    tile_t *old_tile = &tiles[oldx][oldy];
-    tile_t *new_tile = &tiles[newx][newy];
+    tile_t *old_tile;
+    tile_t *new_tile;
+
+    assert(player); /* player must not be a NULL pointer */
+
+    /* Co-ordinates must be valid */
+    assert(oldx >= 0 && oldx < MAX_MAP_WIDTH);
+    assert(oldy >= 0 && oldy < MAX_MAP_HEIGHT);
+    assert(newx >= 0 && newx < MAX_MAP_WIDTH);
+    assert(newy >= 0 && newy < MAX_MAP_HEIGHT);
+
+    old_tile = &tiles[oldx][oldy];
+    new_tile = &tiles[newx][newy];
 
     player->x = newx;
     player->y = newy;
@@ -122,8 +141,19 @@ int world_set_player_location(player_t *player, int oldx, int oldy,
 int world_set_npc_location(npc_t *npc, int oldx, int oldy,
                            int newx, int newy)
 {
-    tile_t *old_tile = &tiles[oldx][oldy];
-    tile_t *new_tile = &tiles[newx][newy];
+    tile_t *old_tile;
+    tile_t *new_tile;
+
+    assert(npc); /* npc must not be a NULL pointer */
+
+    /* Co-ordinates must be valid */
+    assert(oldx >= 0 && oldx < MAX_MAP_WIDTH);
+    assert(oldy >= 0 && oldy < MAX_MAP_HEIGHT);
+    assert(newx >= 0 && newx < MAX_MAP_WIDTH);
+    assert(newy >= 0 && newy < MAX_MAP_HEIGHT);
+
+    old_tile = &tiles[oldx][oldy];
+    new_tile = &tiles[newx][newy];
 
     npc->x = newx;
     npc->y = newy;
@@ -135,8 +165,19 @@ int world_set_npc_location(npc_t *npc, int oldx, int oldy,
 int world_set_grounditem_location(grounditem_t *item,
                                   int oldx, int oldy, int newx, int newy)
 {
-    tile_t *old_tile = &tiles[oldx][oldy];
-    tile_t *new_tile = &tiles[newx][newy];
+    tile_t *old_tile;
+    tile_t *new_tile;
+
+    assert(item); /* item must not be a NULL pointer */
+
+    /* Co-ordinates must be valid */
+    assert(oldx >= 0 && oldx < MAX_MAP_WIDTH);
+    assert(oldy >= 0 && oldy < MAX_MAP_HEIGHT);
+    assert(newx >= 0 && newx < MAX_MAP_WIDTH);
+    assert(newy >= 0 && newy < MAX_MAP_HEIGHT);
+
+    old_tile = &tiles[oldx][oldy];
+    new_tile = &tiles[newx][newy];
 
     item->x = newx;
     item->y = newy;

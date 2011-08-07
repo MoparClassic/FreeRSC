@@ -8,7 +8,6 @@
 #ifndef ENTITYSTATELIST_H
 #define	ENTITYSTATELIST_H
 
-#include "common.h"
 #include "linkedlist.h"
 
 typedef struct statelist eslist_t;

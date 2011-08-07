@@ -8,8 +8,6 @@
 #ifndef PROJECTILE_H
 #define	PROJECTILE_H
 
-#include "common.h"
-
 typedef struct projectile projectile_t;
 
 struct projectile {

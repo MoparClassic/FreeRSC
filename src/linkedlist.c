@@ -2,9 +2,12 @@
  * File:   linkedlist.c
  */
 
-#include <stdint.h>
-#include <stdio.h>
 #include "linkedlist.h"
+#include "common.h"
+
+#include <assert.h>
+#include <stdlib.h>
+#include <string.h>
 
 #ifdef STATIC_ALLOC_LINKEDLIST_NODES
 
@@ -15,7 +18,7 @@
 #endif
 
 static struct lnode_ref {
-    uint32_t used;
+    unsigned int used;
     lnode_t node;
 };
 
@@ -25,7 +28,6 @@ void
 linkedlist_init()
 {
     memset(lnode_ref_list, 0, sizeof (lnode_ref_list));
-    printf("Nodes available: %d\n", MAX_LINKEDLIST_NODES);
 }
 #endif
 
@@ -42,9 +44,6 @@ lnode_t_alloc()
         i %= MAX_LINKEDLIST_NODES;
         noderef = &lnode_ref_list[i + 1];
         if (noderef->used == UNUSED) {
-#if UNIT_TESTING_VERBOSITY_LEVEL >= 2
-            printf("Node found! ID=%d\n", i + 1);
-#endif
             noderef->used = IN_USE;
             node = &noderef->node;
             memset(node, 0, sizeof (node));
@@ -62,16 +61,18 @@ lnode_t_alloc()
 
 void lnode_t_free(lnode_t *node)
 {
+    assert(node); /* node must not be a NULL pointer */
+    
     if (NULL == node) {
         return;
     }
 #ifdef STATIC_ALLOC_LINKEDLIST_NODES
-    uint32_t *usedptr = (uint32_t *) (((uint8_t *) node) - sizeof (uint32_t));
+    unsigned int *usedptr = (unsigned int *) (((unsigned char *) node) - sizeof (unsigned int));
 
     *usedptr = UNUSED;
     memset(node, 0, sizeof (lnode_t));
 #else
-    free(node); // Lol ^_^
+    free(node);
 #endif
 }
 
@@ -86,6 +87,8 @@ linkedlist_new()
 void
 linkedlist_free(linkedlist_t *list)
 {
+    assert(list); /* list must not be a NULL pointer */
+    
     linkedlist_clear(list);
     free(list);
 }
@@ -96,6 +99,8 @@ linkedlist_clear(linkedlist_t *list)
     lnode_t *cur;
     lnode_t *next;
     int count = 0;
+
+    assert(list); /* list must not be a NULL pointer */
 
     cur = list->head;
     while (NULL != cur) {
@@ -118,26 +123,25 @@ linkedlist_append(linkedlist_t *list, void *value)
     lnode_t *cur;
     lnode_t *prev;
 
-    if (value == NULL) {
-        return NULL;
-    }
+    assert(list); /* list must not be a NULL pointer */
+    assert(value); /* value must not be a NULL pointer */
 
     node = lnode_t_alloc();
     memset(node, 0, sizeof (lnode_t));
     node->data = value;
 
-    // If there is currently no head node, make this node the head
+    /* If there is currently no head node, make this node the head */
     if (NULL == list->head) {
         list->head = node;
         return node;
     }
 
-    // Find the last node in the list, and assign it to prev
+    /* Find the last node in the list, and assign it to prev */
     for (cur = list->head; NULL != cur; prev = cur, cur = cur->next);
 
-    prev->next = node; // Set the next field in prev to the new node
+    prev->next = node; /* Set the next field in prev to the new node */
     ++list->size;
-    return node; // Will not reach this point
+    return node; /* Will not reach this point */
 }
 
 lnode_t *
@@ -145,9 +149,8 @@ linkedlist_prepend(linkedlist_t *list, void *value)
 {
     lnode_t *node;
 
-    if (NULL == value) {
-        return NULL;
-    }
+    assert(list); /* list must not be a NULL pointer */
+    assert(value); /* value must not be a NULL pointer */
 
     node = lnode_t_alloc();
     memset(node, 0, sizeof (lnode_t));
@@ -164,7 +167,10 @@ linkedlist_remove(linkedlist_t *list, void *value)
     lnode_t *node = list->head;
     lnode_t *prev = list->head;
 
-    if (NULL == value) {
+    assert(list); /* list must not be a NULL pointer */
+    assert(value); /* value must not be a NULL pointer */
+
+    if (NULL == node) {
         return 0;
     }
 
@@ -187,12 +193,13 @@ linkedlist_remove(linkedlist_t *list, void *value)
         return 1;
     }
 
-    return 0; // Nothing removed
+    return 0; /* Nothing removed */
 }
 
 int
 linkedlist_empty(linkedlist_t *list)
 {
+    assert(list); /* list must not be a NULL pointer */
     return NULL == list->head;
 }
 
@@ -205,6 +212,8 @@ linkedlist_size(linkedlist_t *list)
     for (; NULL != node; node = node->next, ++count);
 
     return count;*/
+
+    assert(list); /* list must not be a NULL pointer */
     return list->size;
 }
 
@@ -213,6 +222,8 @@ linkedlist_poll(linkedlist_t *list)
 {
     lnode_t *node = list->head;
     void *val;
+
+    assert(list); /* list must not be a NULL pointer */
 
     if (NULL == node) {
         return NULL;
