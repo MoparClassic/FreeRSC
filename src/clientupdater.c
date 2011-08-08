@@ -528,7 +528,7 @@ send_player_update_packet(client_t *client)
                 cbuffer_write_short(cbuf, projectile->projectile_type);
                 cbuffer_write_short(cbuf, projectile->victim_index);
             }
-            else if (projectile->victim_type == ENTITY_PLAYER) { 
+            else if (projectile->victim_type == ENTITY_PLAYER) {
                 cbuffer_write_short(cbuf, projectile->caster_index);
                 cbuffer_write_byte(cbuf, 4);
                 cbuffer_write_short(cbuf, projectile->projectile_type);

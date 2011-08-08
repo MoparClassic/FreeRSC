@@ -43,6 +43,8 @@ struct player {
 
     uint8_t max_stats[18];
     uint8_t cur_stats[18];
+    uint8_t combat_style;
+    uint16_t fatigue;
 
     uint8_t hair_colour;
     uint8_t top_colour;

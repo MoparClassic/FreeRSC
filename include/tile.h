@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   tile.h
  * Author: lothy
  *

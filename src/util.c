@@ -117,7 +117,7 @@ trim(char *dst, const char *src, size_t siz)
     while (--n != 0 && *e != '\0') {
         ++e;
     }
-    
+
     while (*s <= ' ')
         ++s;
 

@@ -14,7 +14,7 @@ int npc_update_position(npc_t *npc)
 int npc_update_appearance_id(npc_t *npc)
 {
     assert(npc); /* npc_t must not be NULL */
-    
+
     if (npc->flags & EF_APPEARANCE_CHANGED) {
         ++npc->appearance_id;
     }
@@ -31,7 +31,7 @@ int npc_set_sprite(npc_t *npc, int sprite)
 {
     assert(npc); /* npc_t must not be NULL */
     assert(sprite > 0); /* Sprite must be a valid, positive integer */
-    
+
     npc->sprite = sprite;
     npc->flags |= EF_SPRITE_CHANGED;
     return 1;

@@ -62,7 +62,7 @@ lnode_t_alloc()
 void lnode_t_free(lnode_t *node)
 {
     assert(node); /* node must not be a NULL pointer */
-    
+
     if (NULL == node) {
         return;
     }
@@ -88,7 +88,7 @@ void
 linkedlist_free(linkedlist_t *list)
 {
     assert(list); /* list must not be a NULL pointer */
-    
+
     linkedlist_clear(list);
     free(list);
 }

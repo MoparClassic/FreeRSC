@@ -38,7 +38,7 @@ get_unused_player_slot()
 void remove_player(player_t *player)
 {
     assert(player); /* player must not be a NULL pointer */
-    
+
     linkedlist_clear(&player->bubbles_to_display);
     linkedlist_clear(&player->chat_messages_to_display);
     linkedlist_clear(&player->hit_updates_to_display);
@@ -78,7 +78,7 @@ get_unused_npc_slot()
 void remove_npc(npc_t *npc)
 {
     assert(npc); /* npc must not be a NULL pointer */
-    
+
     memset(npc, 0, sizeof(npc_t));
     npc->index = UNUSED;
 }

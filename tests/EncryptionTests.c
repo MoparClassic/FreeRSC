@@ -4,19 +4,20 @@
 #include <string.h>
 
 static void
-test_encryption_decryption(CuTest *tc) {
+test_encryption_decryption(CuTest *tc)
+{
     char enc_vals[] = {
-        19, -58, -55, 97, 70, -119, -44, 91, -106, -105, -83, -43, -49, 
+        19, -58, -55, 97, 70, -119, -44, 91, -106, -105, -83, -43, -49,
         11, -101, -104, -12, -98, -9, -112, 23, -119, -99, -111, -2, 37,
         0, 74, -67, -124, 77, -6, 5, 118, 14, -104, -77, 11, -33, 14, -8,
         106, 38, 32, 44, -32, -51, 115, 63, -113, 119, 7, -6, -71, -91,
         -94, -84, -98, 51, 13, 10, -125, -117, 46
     };
-/*
-    char enc_vals[] = {
-        0, 1, 2, 3
-    };
-*/
+    /*
+        char enc_vals[] = {
+            0, 1, 2, 3
+        };
+    */
     char dec_vals[] = {
         3, 51, -89, -80, 4, -47, 98, 107, -20, 122, -74, 21, 3, 121, -113,
         27, 0, 0, 0, 0, 76, 111, 116, 104, 121, 32, 32, 32, 32, 32, 32, 32,
@@ -43,27 +44,27 @@ test_encryption_decryption(CuTest *tc) {
 
     mpz_init(rofl);
 
-/*
-    if (mpz_set_str(pubkey, pub_key_str, 10) == -1) {
-        printf("Public key is invalid base 10 integer\n");
-    }
-    gmp_printf("Public key: %Zx\n", pubkey);
+    /*
+        if (mpz_set_str(pubkey, pub_key_str, 10) == -1) {
+            printf("Public key is invalid base 10 integer\n");
+        }
+        gmp_printf("Public key: %Zx\n", pubkey);
 
-    if (mpz_set_str(privkey, priv_key_str, 10) == -1) {
-        printf("Private key is invalid base 10 integer\n");
-    }
-    gmp_printf("Private key: %Zx\n", privkey);
+        if (mpz_set_str(privkey, priv_key_str, 10) == -1) {
+            printf("Private key is invalid base 10 integer\n");
+        }
+        gmp_printf("Private key: %Zx\n", privkey);
 
-    if (mpz_set_str(mod, mod_str, 10) == -1) {
-        printf("Modulo is invalid base 10 integer\n");
-    }
-    gmp_printf("Modulo: %Zx\n", mod);
+        if (mpz_set_str(mod, mod_str, 10) == -1) {
+            printf("Modulo is invalid base 10 integer\n");
+        }
+        gmp_printf("Modulo: %Zx\n", mod);
 
-    if (mpz_set_str(testval, test_str, 16) == -1) {
-        printf("Testval is invalid base 16 integer\n");
-    }
-    gmp_printf("Testval: %Zx\n", testval);
-*/
+        if (mpz_set_str(testval, test_str, 16) == -1) {
+            printf("Testval is invalid base 16 integer\n");
+        }
+        gmp_printf("Testval: %Zx\n", testval);
+    */
 
     mpz_set_ui(rofl, 0);
     for (i = 0; i < sizeof(enc_vals); ++i) {
@@ -76,12 +77,12 @@ test_encryption_decryption(CuTest *tc) {
     result = mpz_get_ui(rofl);
     printf("%d\n", result);
 
-/*
-    mpz_powm(encrypted_vals, testval, pubkey, mod);
-    gmp_printf("Encrypted testval: %Zd\n", encrypted_vals);
-    mpz_powm(decrypted_vals, encrypted_vals, privkey, mod);
-    gmp_printf("Decrypted testval: %Zx\n", decrypted_vals);
-*/
+    /*
+        mpz_powm(encrypted_vals, testval, pubkey, mod);
+        gmp_printf("Encrypted testval: %Zd\n", encrypted_vals);
+        mpz_powm(decrypted_vals, encrypted_vals, privkey, mod);
+        gmp_printf("Decrypted testval: %Zx\n", decrypted_vals);
+    */
 
     /*memset(buf, 0, sizeof (buf));
     mpz_get_str(buf, 10, decrypted_vals);
@@ -90,11 +91,11 @@ test_encryption_decryption(CuTest *tc) {
     }
     printf("\n");*/
 
-/*
-    if (mpz_cmp(testval, decrypted_vals) == 0) {
-        printf("Initial testval is equal to decrypted value\n");
-    }
-*/
+    /*
+        if (mpz_cmp(testval, decrypted_vals) == 0) {
+            printf("Initial testval is equal to decrypted value\n");
+        }
+    */
 
     mpz_clear(pubkey);
     mpz_clear(privkey);
@@ -104,7 +105,8 @@ test_encryption_decryption(CuTest *tc) {
     mpz_clear(decrypted_vals);
 }
 
-CuSuite * get_encryption_test_suite() {
+CuSuite * get_encryption_test_suite()
+{
     CuSuite *suite = CuSuiteNew();
     SUITE_ADD_TEST(suite, &test_encryption_decryption);
     return suite;

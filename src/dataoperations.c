@@ -9,7 +9,7 @@ uint8_t dops_read_byte(void *data, int ofs)
 
     assert(data); /* data must not be a NULL pointer */
     assert(ofs >= 0); /* Offset must be a valid array index */
-    
+
     return buf[ofs];
 }
 

@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   playerutil.h
  * Author: lothy
  *

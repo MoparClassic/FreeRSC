@@ -292,7 +292,7 @@ player_can_see_item(player_t *player, grounditem_t *item)
 {
     assert(player); /* player must not be a NULL pointer */
     assert(item); /* item must not be a NULL pointer */
-    
+
     if (0 == item->dropper ||
         player->username_hash == item->dropper) {
         return 1;

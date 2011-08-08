@@ -6,16 +6,17 @@
 #include <assert.h>
 
 inline int
-within_range(int x, int y, int targ_x, int targ_y) {
+within_range(int x, int y, int targ_x, int targ_y)
+{
     int xdif = x - targ_x;
     int ydif = y - targ_y;
     return xdif <= 16 && xdif >= -15 &&
-            ydif <= 16 && ydif >= -15;
+           ydif <= 16 && ydif >= -15;
 }
 
 int
 get_viewed_area(int mob_x, int mob_y, linkedlist_t *tile_list,
-                       int x1, int y1, int x2, int y2)
+                int x1, int y1, int x2, int y2)
 {
     int start_x, start_y, end_x, end_y;
     int x_width, y_width;

@@ -76,7 +76,7 @@ static void *
 game_loop(struct ev_timer *w, int revents)
 {
     assert(w); /* w must not be a NULL pointer */
-    
+
     timestamp = get_current_time_millis();
     send_client_updates();
 }
@@ -86,7 +86,7 @@ sigint_cb(struct ev_loop *loop, ev_signal *w, int revents)
 {
     assert(loop); /* loop must not be a NULL pointer */
     assert(w); /* w must not be a NULL pointer */
-    
+
     printf("Received SIGINT -- shutting down\n");
     ev_break(loop, EVBREAK_ALL);
 }

@@ -36,7 +36,7 @@ int player_update_position(player_t *player)
 int player_update_appearance_id(player_t *player)
 {
     assert(player); /* player must not be a NULL pointer */
-    
+
     if (EF_APPEARANCE_CHANGED & player->flags) {
         ++player->appearance_id;
     }

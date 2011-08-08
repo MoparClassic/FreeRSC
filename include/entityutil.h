@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   entityutil.h
  * Author: lothy
  *
@@ -18,7 +18,7 @@
 
 inline int within_range(int x, int y, int targ_x, int targ_y);
 int get_viewed_area(int mob_x, int mob_y, linkedlist_t *tile_list,
-        int x1, int y1, int x2, int y2);
+                    int x1, int y1, int x2, int y2);
 
 #endif	/* ENTITYUTIL_H */
 

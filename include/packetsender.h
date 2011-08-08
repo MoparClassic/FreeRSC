@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   packetsender.h
  * Author: lothy
  *
@@ -16,7 +16,7 @@ int send_screenshot(client_t *client);
 int send_combat_style(client_t *client);
 int send_fatigue(client_t *client);
 int hide_menu(client_t *client);
-int send_menu(client_t *client, const char *options[]);
+int send_menu(client_t *client, const char *options[], int opt_count);
 int show_bank(client_t *client);
 int hide_bank(client_t *client);
 int update_bank_item(client_t *client, int slot, int new_id, int amount);

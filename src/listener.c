@@ -35,7 +35,7 @@ accept_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
 
     assert(loop); /* loop must not be a NULL pointer */
     assert(watcher); /* watcher must not be a NULL pointer */
-    
+
     if (EV_ERROR & revents) {
         perror("got invalid event");
         return;
@@ -175,7 +175,7 @@ void disconnect(struct ev_loop *loop, struct ev_io *watcher)
 {
     assert(loop); /* loop must not be a NULL pointer */
     assert(watcher); /* watcher must not be a NULL pointer */
-    
+
     ev_io_stop(loop, watcher);
     client_free((client_t *) watcher->attachment);
     ev_watcher_free(watcher);
