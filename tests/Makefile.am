@@ -4,6 +4,7 @@ FreeRSCUnitTests_SOURCES = AllTests.c \
 			CuTest.c \
 			../src/entityutil.c \
 			../src/playerutil.c \
+			../src/tile.c \
 			../src/util.c \
 			UtilTests.c \
 			../src/linkedlist.c \

@@ -7,7 +7,6 @@
 linkedlist_t client_list;
 player_t player_list[MAX_PLAYERS + 1];
 npc_t npc_list[MAX_NPCS + 1];
-tile_t tiles[MAX_MAP_WIDTH][MAX_MAP_HEIGHT];
 
 int world_init()
 {

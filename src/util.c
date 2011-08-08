@@ -104,3 +104,40 @@ strlcpy(char *dst, const char *src, size_t siz)
     return (s - src - 1); /* count does not include NUL */
 }
 #endif
+
+size_t
+trim(char *dst, const char *src, size_t siz)
+{
+    char *d = dst;
+    const char *e = src;
+    const char *s = src;
+    size_t n = siz;
+
+    /* Find the end of the src string */
+    while (--n != 0 && *e != '\0') {
+        ++e;
+    }
+    
+    while (*s <= ' ')
+        ++s;
+
+    while (*e <= ' ')
+        --e;
+
+    n = siz;
+    ++e; /* Add one to account for the NUL-byte */
+    if (n != 0) {
+        while (--n != 0 && s != e) {
+            if ((*d++ = *s++) == '\0')
+                break;
+        }
+    }
+
+    /* Not enough room in dst, add NUL and traverse rest of src */
+    if (n == 0) {
+        if (siz != 0)
+            *d = '\0'; /* NUL-terminate dst */
+    }
+
+    return 1;
+}

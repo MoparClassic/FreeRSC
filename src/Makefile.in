@@ -191,7 +191,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_CFLAGS = -O2 -pedantic -I../libs/libev -DPRINT_PAYLOAD -DSTATIC_ALLOC_CLIENTS=1000 -DSTATIC_ALLOC_LINKEDLIST_NODES=2000000
+AM_CFLAGS = -O2 -pedantic -I../libs/libev -DPRINT_PAYLOAD -DSTATIC_ALLOC_CLIENTS=1000 -DSTATIC_ALLOC_LINKEDLIST_NODES=2000000 -DNDEBUG
 FreeRSC_SOURCES = circularbuffer.c \
 		client.c \
 		clientupdater.c \

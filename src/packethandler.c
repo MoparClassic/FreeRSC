@@ -394,30 +394,45 @@ static int
 login(client_t *client, uint32_t opcode, uint32_t psiz)
 {
     cbuffer_t *inbuf = &client->in_buffer;
+    cbuffer_t *outbuf = &client->out_buffer;
     uint8_t reconnecting = 0;
     uint16_t client_version = 0;
     uint32_t uid;
-    uint32_t session_keys[4];
     uint8_t buf[psiz - 4];
+    uint32_t session_keys[4];
     int ofs = 0;
     int ps = psiz;
     int encrypted_siz;
     int i;
+    int return_code = 22;
     char username_dirty[21];
     char password_dirty[21];
     char username[13];
     char password[21];
 
+    memset(username_dirty, 0, sizeof(username_dirty));
+    memset(password_dirty, 0, sizeof(password_dirty));
+    memset(username, 0, sizeof(username));
+    memset(password, 0, sizeof(password));
+
     cbuffer_mark_read_position(inbuf);
     reconnecting = cbuffer_read_byte(inbuf);
     client_version = cbuffer_read_short(inbuf);
-    encrypted_siz = cbuffer_read_byte(inbuf);
-
-    cbuffer_read_bytes(inbuf, buf, sizeof(buf));
-    for (i = 0; i < sizeof(buf); ++i) {
-        printf("'%d', ", buf[i]);
+    //encrypted_siz = cbuffer_read_byte(inbuf);
+    for (i = 0; i < 4; ++i) {
+        session_keys[i] = cbuffer_read_int(inbuf);
     }
-    printf("\n");
+    uid = cbuffer_read_int(inbuf);
+    cbuffer_read_fixedlen_string(inbuf, 20, username_dirty, sizeof(username_dirty));
+    cbuffer_read_fixedlen_string(inbuf, 20, password_dirty, sizeof(password_dirty));
+
+    printf("'%s', '%s'\n", username_dirty, password_dirty);
+    trim(username, username_dirty, sizeof(username));
+    trim(password, password_dirty, sizeof(password));
+    printf("'%s', '%s'\n", username, password);
+
+    return_code = 0; /* Successful login */
+    cbuffer_send_data(outbuf, &return_code, sizeof(return_code));
 
     cbuffer_rewind_read_position(inbuf);
     discard(client, opcode, psiz);

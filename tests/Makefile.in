@@ -51,8 +51,8 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_FreeRSCUnitTests_OBJECTS = AllTests.$(OBJEXT) CuTest.$(OBJEXT) \
-	entityutil.$(OBJEXT) playerutil.$(OBJEXT) util.$(OBJEXT) \
-	UtilTests.$(OBJEXT) linkedlist.$(OBJEXT) \
+	entityutil.$(OBJEXT) playerutil.$(OBJEXT) tile.$(OBJEXT) \
+	util.$(OBJEXT) UtilTests.$(OBJEXT) linkedlist.$(OBJEXT) \
 	LinkedListTests.$(OBJEXT) entitystatelist.$(OBJEXT) \
 	EntityStateListTests.$(OBJEXT) circularbuffer.$(OBJEXT) \
 	CircularBufferTests.$(OBJEXT) world.$(OBJEXT) \
@@ -200,6 +200,7 @@ FreeRSCUnitTests_SOURCES = AllTests.c \
 			CuTest.c \
 			../src/entityutil.c \
 			../src/playerutil.c \
+			../src/tile.c \
 			../src/util.c \
 			UtilTests.c \
 			../src/linkedlist.c \
@@ -338,6 +339,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/npc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/player.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/playerutil.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/world.Po@am__quote@
 
@@ -389,6 +391,20 @@ playerutil.obj: ../src/playerutil.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../src/playerutil.c' object='playerutil.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o playerutil.obj `if test -f '../src/playerutil.c'; then $(CYGPATH_W) '../src/playerutil.c'; else $(CYGPATH_W) '$(srcdir)/../src/playerutil.c'; fi`
+
+tile.o: ../src/tile.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tile.o -MD -MP -MF $(DEPDIR)/tile.Tpo -c -o tile.o `test -f '../src/tile.c' || echo '$(srcdir)/'`../src/tile.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/tile.Tpo $(DEPDIR)/tile.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../src/tile.c' object='tile.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tile.o `test -f '../src/tile.c' || echo '$(srcdir)/'`../src/tile.c
+
+tile.obj: ../src/tile.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tile.obj -MD -MP -MF $(DEPDIR)/tile.Tpo -c -o tile.obj `if test -f '../src/tile.c'; then $(CYGPATH_W) '../src/tile.c'; else $(CYGPATH_W) '$(srcdir)/../src/tile.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/tile.Tpo $(DEPDIR)/tile.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../src/tile.c' object='tile.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tile.obj `if test -f '../src/tile.c'; then $(CYGPATH_W) '../src/tile.c'; else $(CYGPATH_W) '$(srcdir)/../src/tile.c'; fi`
 
 util.o: ../src/util.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT util.o -MD -MP -MF $(DEPDIR)/util.Tpo -c -o util.o `test -f '../src/util.c' || echo '$(srcdir)/'`../src/util.c

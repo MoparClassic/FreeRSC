@@ -14,6 +14,8 @@
 
 extern uint64_t timestamp;
 
+uint64_t get_current_time_millis();
+
 #ifndef HAVE_STRDUP
 char *strdup(const char *src);
 #endif
@@ -26,7 +28,7 @@ size_t strlcat(char *dst, const char *src, size_t siz);
 size_t strlcpy(char *dst, const char *src, size_t siz);
 #endif
 
-uint64_t get_current_time_millis();
+size_t trim(char *dst, const char *src, size_t siz);
 
 #endif	/* UTIL_H */
 
