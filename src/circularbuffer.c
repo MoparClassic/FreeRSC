@@ -21,8 +21,14 @@ int cbuffer_create_frame(cbuffer_t *cbuf, uint32_t opcode)
     assert(cbuf);
     assert(opcode >= 0 && opcode <= 255);
 
-    cbuf->start_offset = cbuffer_write_short(cbuf, 0); /* Size placeholder */
-    cbuffer_write_byte(cbuf, opcode);
+    if (cbuf->start_offset > (BUFFER_SIZE * 4) / 5) {
+        printf("cbuffer_create_frame flushing buffer\n");
+        cbuffer_send(cbuf);
+    }
+
+    cbuf->buffer[cbuf->start_offset + 2] = (uint8_t) opcode;
+    cbuf->buffer[cbuf->start_offset + 3] = 0;
+    cbuf->write_offset = cbuf->start_offset + 3;
     return 1;
 }
 
@@ -54,51 +60,40 @@ int cbuffer_available(cbuffer_t *cbuf)
     }
 }
 
-int cbuffer_send(cbuffer_t *cbuf)
+int cbuffer_format_packet(cbuffer_t *cbuf)
 {
-    int datlen;
-    int plen;
-    int payload_len;
-    int size_idx;
-    void *data;
+    int size;
 
-    assert(cbuf);
+    assert(cbuf); /* cbuf must not be a NULL pointer */
 
-    if (cbuf->write_offset > cbuf->start_offset) {
-        plen = cbuf->write_offset - cbuf->start_offset;
-        payload_len = plen - 2; /* Account for the two-byte size header */
-        size_idx = (cbuf->start_offset + 1) % BUFFER_SIZE;
-        cbuf->buffer[size_idx] = (uint8_t) (payload_len >> 8);
-        size_idx = (cbuf->start_offset + 2) % BUFFER_SIZE;
-        cbuf->buffer[size_idx] = (uint8_t) payload_len;
-
-        datlen = plen;
-        data = &cbuf->buffer[cbuf->start_offset];
-        send(cbuf->fd, data, datlen, 0);
+    size = cbuf->write_offset - cbuf->start_offset - 2;
+    if (size >= 160) {
+        cbuf->buffer[cbuf->start_offset] = (uint8_t) (160 + size / 256);
+        cbuf->buffer[cbuf->start_offset + 1] = (uint8_t) size;
     }
     else {
-        plen = cbuf->write_offset + BUFFER_SIZE - cbuf->start_offset;
-        payload_len = plen - 2; /* Account for the two-byte size header */
-        size_idx = (cbuf->start_offset + 1) % BUFFER_SIZE;
-        cbuf->buffer[size_idx] = (uint8_t) (payload_len >> 8);
-        size_idx = (cbuf->start_offset + 2) % BUFFER_SIZE;
-        cbuf->buffer[size_idx] = (uint8_t) payload_len;
-
-        datlen = BUFFER_SIZE - plen;
-        data = &cbuf->buffer[cbuf->start_offset];
-        send(cbuf->fd, data, datlen, 0);
-
-        data = cbuf->buffer;
-        datlen = cbuf->write_offset;
-        send(cbuf->fd, cbuf->buffer, datlen, 0);
+        cbuf->buffer[cbuf->start_offset] = (uint8_t) size;
+        --cbuf->write_offset;
+        cbuf->buffer[cbuf->start_offset + 1] = (uint8_t) cbuf->buffer[cbuf->write_offset];
     }
+    cbuf->start_offset = cbuf->write_offset;
+    return 1;
+}
+
+int cbuffer_send(cbuffer_t *cbuf)
+{
+    assert(cbuf); /* cbuf must not be a NULL pointer */
+
+    send(cbuf->fd, cbuf->buffer, cbuf->write_offset, 0);
+    cbuf->start_offset = 0;
+    cbuf->write_offset = 3;
     return 1;
 }
 
 int cbuffer_send_data(cbuffer_t *cbuf, void *data, size_t sz)
 {
-    assert(cbuf);
-    assert(data);
+    assert(cbuf); /* cbuf must not be a NULL pointer */
+    assert(data); /* data must not be a NULL pointer */
 
     send(cbuf->fd, data, sz, 0);
     return 1;
@@ -108,10 +103,8 @@ int cbuffer_write_byte(cbuffer_t *cbuf, uint8_t value)
 {
     assert(cbuf);
 
-    cbuf->write_offset =
-        WRAP_WRITE_PTR(cbuf->write_offset, BUFFER_SIZE);
-    cbuf->buffer[cbuf->write_offset] = value;
-    return cbuf->write_offset++;
+    cbuf->buffer[cbuf->write_offset++] = value;
+    return 1;
 }
 
 int cbuffer_write_short(cbuffer_t *cbuf, uint16_t value)

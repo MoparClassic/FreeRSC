@@ -15,8 +15,14 @@ public class PacketConstruction {
         if (skip8Offset != 8)
             packetOffset++;
         int j = packetOffset - packetStart - 2;
-        packetData[packetStart] = (byte) (j >> 8);
-        packetData[packetStart + 1] = (byte) j;
+        if (j >= 160) {
+            packetData[packetStart] = (byte) (160 + j / 256);
+            packetData[packetStart + 1] = (byte) (j & 0xff);
+        } else {
+            packetData[packetStart] = (byte) j;
+            packetOffset--;
+            packetData[packetStart + 1] = packetData[packetOffset];
+        }
         if (maxPacketLength <= 10000) {
             int k = packetData[packetStart + 2] & 0xff;
             packetCommandCount[k]++;
@@ -65,10 +71,18 @@ public class PacketConstruction {
                 return 0;
             }
             if (length == 0 && inputStreamAvailable() >= 2) {
-                length = (readInputStream() << 8) | readInputStream();
+                length = readInputStream();
+                if (length >= 160)
+                    length = (length - 160) * 256 + readInputStream();
             }
             if (length > 0 && inputStreamAvailable() >= length) {
-                readInputStream(length, data);
+                if (length >= 160) {
+                    readInputStream(length, data);
+                } else {
+                    data[length - 1] = (byte) readInputStream();
+                    if (length > 1)
+                        readInputStream(length - 1, data);
+                }
                 int readBytes = length;
                 length = 0;
                 packetReadCount = 0;

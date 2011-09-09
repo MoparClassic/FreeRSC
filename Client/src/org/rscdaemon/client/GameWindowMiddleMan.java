@@ -52,46 +52,23 @@ public abstract class GameWindowMiddleMan extends GameWindow {
             sessionRotationKeys[1] = (int) (Math.random() * 99999999D);
             sessionRotationKeys[2] = (int) (sessionID >> 32);
             sessionRotationKeys[3] = (int) sessionID;
-//            DataEncryption dataEncryption = new DataEncryption(new byte[500]);
-//            dataEncryption.offset = 0;
-//            dataEncryption.add4ByteInt(sessionRotationKeys[0]);
-//            dataEncryption.add4ByteInt(sessionRotationKeys[1]);
-//            dataEncryption.add4ByteInt(sessionRotationKeys[2]);
-//            dataEncryption.add4ByteInt(sessionRotationKeys[3]);
-//            dataEncryption.add4ByteInt(0); // UID
-//            dataEncryption.addString(user);
-//            dataEncryption.addString(pass);
-//            System.out.println("Unencrypted login block: ");
-//            StringBuilder sb = new StringBuilder(500);
-//            for (int i = 0; i < dataEncryption.offset; i++) {
-//                sb.append(dataEncryption.packet[i]).append(", ");
-//            }
-//            System.out.println(sb.substring(0, sb.length() - 2));
-//            dataEncryption.encryptPacketWithKeys(key, modulus);
-//
-//            System.out.println("Encrypted login block: ");
-//            sb = new StringBuilder(500);
-//            for (int i = 0; i < dataEncryption.offset; i++) {
-//                sb.append(dataEncryption.packet[i]).append(", ");
-//            }
-//            System.out.println(sb.substring(0, sb.length() - 2));
+            DataEncryption dataEncryption = new DataEncryption(new byte[500]);
+            dataEncryption.offset = 0;
+            dataEncryption.add4ByteInt(sessionRotationKeys[0]);
+            dataEncryption.add4ByteInt(sessionRotationKeys[1]);
+            dataEncryption.add4ByteInt(sessionRotationKeys[2]);
+            dataEncryption.add4ByteInt(sessionRotationKeys[3]);
+            dataEncryption.add4ByteInt(0); // UID
+            dataEncryption.addString(user);
+            dataEncryption.addString(pass);
+            dataEncryption.encryptPacketWithKeys(key, modulus);
             streamClass.createPacket(0);
             if (reconnecting)
                 streamClass.addByte(1);
             else
                 streamClass.addByte(0);
             streamClass.add2ByteInt(clientVersion);
-//            streamClass.addBytes(dataEncryption.packet, 0, dataEncryption.offset);
-
-            // Remove/comment this block of code out when encryption is re-enabled
-            streamClass.add4ByteInt(sessionRotationKeys[0]);
-            streamClass.add4ByteInt(sessionRotationKeys[1]);
-            streamClass.add4ByteInt(sessionRotationKeys[2]);
-            streamClass.add4ByteInt(sessionRotationKeys[3]);
-            streamClass.add4ByteInt(0); // UID
-            streamClass.addString(user);
-            streamClass.addString(pass);
-            // End of block that replaces encrypted packet contents
+            streamClass.addBytes(dataEncryption.packet, 0, dataEncryption.offset);
             streamClass.finalisePacket();
             int loginResponse = streamClass.readInputStream();
             System.out.println(" - Login Response:" + loginResponse);

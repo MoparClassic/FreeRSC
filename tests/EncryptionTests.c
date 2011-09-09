@@ -108,6 +108,6 @@ test_encryption_decryption(CuTest *tc)
 CuSuite * get_encryption_test_suite()
 {
     CuSuite *suite = CuSuiteNew();
-    SUITE_ADD_TEST(suite, &test_encryption_decryption);
+    //SUITE_ADD_TEST(suite, &test_encryption_decryption);
     return suite;
 }

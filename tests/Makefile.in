@@ -52,7 +52,8 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_FreeRSCUnitTests_OBJECTS = AllTests.$(OBJEXT) CuTest.$(OBJEXT) \
 	entityutil.$(OBJEXT) playerutil.$(OBJEXT) tile.$(OBJEXT) \
-	util.$(OBJEXT) UtilTests.$(OBJEXT) linkedlist.$(OBJEXT) \
+	inventory.$(OBJEXT) InventoryTests.$(OBJEXT) util.$(OBJEXT) \
+	UtilTests.$(OBJEXT) linkedlist.$(OBJEXT) \
 	LinkedListTests.$(OBJEXT) entitystatelist.$(OBJEXT) \
 	EntityStateListTests.$(OBJEXT) circularbuffer.$(OBJEXT) \
 	CircularBufferTests.$(OBJEXT) world.$(OBJEXT) \
@@ -201,6 +202,8 @@ FreeRSCUnitTests_SOURCES = AllTests.c \
 			../src/entityutil.c \
 			../src/playerutil.c \
 			../src/tile.c \
+			../src/inventory.c \
+			InventoryTests.c \
 			../src/util.c \
 			UtilTests.c \
 			../src/linkedlist.c \
@@ -322,6 +325,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/EncryptionTests.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/EntityStateListTests.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GameObjectTests.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InventoryTests.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ItemTests.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LinkedListTests.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NpcTests.Po@am__quote@
@@ -334,6 +338,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/entitystatelist.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/entityutil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gameobject.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inventory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/item.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/linkedlist.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/npc.Po@am__quote@
@@ -405,6 +410,20 @@ tile.obj: ../src/tile.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../src/tile.c' object='tile.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tile.obj `if test -f '../src/tile.c'; then $(CYGPATH_W) '../src/tile.c'; else $(CYGPATH_W) '$(srcdir)/../src/tile.c'; fi`
+
+inventory.o: ../src/inventory.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT inventory.o -MD -MP -MF $(DEPDIR)/inventory.Tpo -c -o inventory.o `test -f '../src/inventory.c' || echo '$(srcdir)/'`../src/inventory.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/inventory.Tpo $(DEPDIR)/inventory.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../src/inventory.c' object='inventory.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o inventory.o `test -f '../src/inventory.c' || echo '$(srcdir)/'`../src/inventory.c
+
+inventory.obj: ../src/inventory.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT inventory.obj -MD -MP -MF $(DEPDIR)/inventory.Tpo -c -o inventory.obj `if test -f '../src/inventory.c'; then $(CYGPATH_W) '../src/inventory.c'; else $(CYGPATH_W) '$(srcdir)/../src/inventory.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/inventory.Tpo $(DEPDIR)/inventory.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../src/inventory.c' object='inventory.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o inventory.obj `if test -f '../src/inventory.c'; then $(CYGPATH_W) '../src/inventory.c'; else $(CYGPATH_W) '$(srcdir)/../src/inventory.c'; fi`
 
 util.o: ../src/util.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT util.o -MD -MP -MF $(DEPDIR)/util.Tpo -c -o util.o `test -f '../src/util.c' || echo '$(srcdir)/'`../src/util.c

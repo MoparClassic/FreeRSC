@@ -32,6 +32,20 @@ static int send_item_position_packet(client_t *client);
 static int send_player_update_packet(client_t *client);
 static int send_npc_update_packet(client_t *client);
 
+int send_queued_packets()
+{
+    client_t *client;
+    lnode_t *node;
+
+    LINKEDLIST_FOREACH(node, &client_list) {
+        client = (client_t *) node->data;
+        assert(client);
+        
+        cbuffer_send(&client->out_buffer);
+    }
+    return 1;
+}
+
 int send_client_updates()
 {
     client_t *client;
@@ -265,7 +279,7 @@ send_player_position_packet(client_t *client)
     }
 
     cbuffer_finish_bit_access(cbuf);
-    cbuffer_send(cbuf);
+    cbuffer_format_packet(cbuf);
     return 0;
 }
 
@@ -321,7 +335,7 @@ send_npc_position_packet(client_t *client)
     }
 
     cbuffer_finish_bit_access(cbuf);
-    cbuffer_send(cbuf);
+    cbuffer_format_packet(cbuf);
     return 0;
 }
 
@@ -369,7 +383,7 @@ send_game_object_position_packet(client_t *client)
         cbuffer_write_byte(cbuf, gameobject_get_dir(go->object_id));
     }
 
-    cbuffer_send(cbuf);
+    cbuffer_format_packet(cbuf);
     return 0;
 }
 
@@ -417,7 +431,7 @@ send_wall_object_position_packet(client_t *client)
         cbuffer_write_byte(cbuf, gameobject_get_dir(go->object_id));
     }
 
-    cbuffer_send(cbuf);
+    cbuffer_format_packet(cbuf);
     return 0;
 }
 
@@ -455,7 +469,7 @@ send_item_position_packet(client_t *client)
         cbuffer_write_byte(cbuf, item->y - py);
     }
 
-    cbuffer_send(cbuf);
+    cbuffer_format_packet(cbuf);
     return 0;
 }
 
@@ -557,7 +571,7 @@ send_player_update_packet(client_t *client)
             cbuffer_write_byte(cbuf, player_get_crown(ptarget));
         }
 
-        cbuffer_send(cbuf);
+        cbuffer_format_packet(cbuf);
     }
     return 0;
 }
@@ -603,7 +617,7 @@ send_npc_update_packet(client_t *client)
             cbuffer_write_byte(cbuf, npcdef_get_hitpoints(npc->npc_id));
         }
 
-        cbuffer_send(cbuf);
+        cbuffer_format_packet(cbuf);
     }
     return 0;
 }

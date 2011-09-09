@@ -11,6 +11,7 @@
 #include "client.h"
 
 #include <stdint.h>
+#include <stdlib.h>
 
 int send_screenshot(client_t *client);
 int send_combat_style(client_t *client);
@@ -22,11 +23,11 @@ int hide_bank(client_t *client);
 int update_bank_item(client_t *client, int slot, int new_id, int amount);
 int show_shop(client_t *client, int shop_id); /* TODO: Implement shops */
 int hide_shop(client_t *client);
-int start_shutdown(client_t *client);
+int start_shutdown(client_t *client, int seconds);
 int send_alert(client_t *client, int is_big, const char *msg);
 int send_sound(client_t *client, const char *sound_name);
 int send_died(client_t *client);
-int send_pm(client_t *client, uint64_t target_hash, uint8_t *msg);
+int send_pm(client_t *client, uint64_t target_hash, uint8_t *msg, size_t sz);
 int send_friend_update(client_t *client, uint64_t target_hash, int world);
 int send_friend_list(client_t *client);
 int send_ignore_list(client_t *client);
@@ -42,6 +43,7 @@ int send_duel_items(client_t *client);
 int send_duel_window_open(client_t *client);
 int send_duel_window_close(client_t *client);
 int send_appearance_screen(client_t *client);
+int send_server_info(client_t *client);
 int send_tele_bubble(client_t *client, int x, int y, int should_grab);
 int send_message(client_t *client, const char *msg);
 int send_remove_item(client_t *client, int slot);

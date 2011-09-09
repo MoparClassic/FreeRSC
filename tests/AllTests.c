@@ -33,6 +33,7 @@ run_all_tests()
     CuSuiteAddSuite(suite, (CuSuite *) get_world_test_suite());
     CuSuiteAddSuite(suite, (CuSuite *) get_client_test_suite());
     CuSuiteAddSuite(suite, (CuSuite *) get_player_test_suite());
+    CuSuiteAddSuite(suite, (CuSuite *) get_inventory_test_suite());
     CuSuiteAddSuite(suite, (CuSuite *) get_gameobject_test_suite());
     CuSuiteAddSuite(suite, (CuSuite *) get_item_test_suite());
     CuSuiteAddSuite(suite, (CuSuite *) get_npc_test_suite());

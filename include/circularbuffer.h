@@ -12,7 +12,7 @@
 #include <stdlib.h>
 
 #ifdef UNIT_TESTING
-#define BUFFER_SIZE 15
+#define BUFFER_SIZE 50
 #else
 #define BUFFER_SIZE 4096
 #endif
@@ -41,6 +41,7 @@ int cbuffer_create_frame(cbuffer_t *cbuf, uint32_t opcode);
 int cbuffer_mark_read_position(cbuffer_t *cbuf);
 int cbuffer_rewind_read_position(cbuffer_t *cbuf);
 int cbuffer_available(cbuffer_t *cbuf);
+int cbuffer_format_packet(cbuffer_t *cbuf);
 int cbuffer_send(cbuffer_t *cbuf);
 int cbuffer_send_data(cbuffer_t *cbuf, void *data, size_t sz);
 

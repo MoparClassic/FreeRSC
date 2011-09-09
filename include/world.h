@@ -8,6 +8,7 @@
 #ifndef WORLD_H
 #define	WORLD_H
 
+#include "client.h"
 #include "common.h"
 #include "gameobject.h"
 #include "item.h"
@@ -47,8 +48,8 @@ void remove_player(player_t *player);
 npc_t *get_unused_npc_slot();
 void remove_npc(npc_t *npc);
 
-int world_register_player(player_t *player);
-int world_unregister_player(player_t *player);
+int world_register_client(client_t *client);
+int world_unregister_client(client_t *client);
 
 int world_register_item(grounditem_t *item);
 int world_unregister_item(grounditem_t *item);

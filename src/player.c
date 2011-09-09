@@ -96,6 +96,57 @@ int player_destroy(player_t *player)
     return 0;
 }
 
+int player_prayer_enabled(player_t *player, int prayer)
+{
+    return player->prayers & (1 << prayer);
+}
+
+int player_activate_prayer(player_t *player, int prayer)
+{
+    player->prayers |= (1 << prayer);
+    return 1;
+}
+
+int player_deactivate_prayer(player_t *player, int prayer)
+{
+    player->prayers &= ~(1 << prayer);
+    return 1;
+}
+
+int player_game_setting_enabled(player_t *player, int setting)
+{
+    return player->game_settings & (1 << setting);
+}
+
+int player_set_game_setting(player_t *player, int setting)
+{
+    player->game_settings |= (1 << setting);
+    return 1;
+}
+
+int player_unset_game_setting(player_t *player, int setting)
+{
+    player->game_settings &= ~(1 << setting);
+    return 1;
+}
+
+int player_privacy_setting_enabled(player_t *player, int setting)
+{
+    return player->privacy_settings & (1 << setting);
+}
+
+int player_set_privacy_setting(player_t *player, int setting)
+{
+    player->privacy_settings |= (1 << setting);
+    return 1;
+}
+
+int player_unset_privacy_setting(player_t *player, int setting)
+{
+    player->privacy_settings &= ~(1 << setting);
+    return 1;
+}
+
 static int
 remove_known_appearance(player_t *player, player_t *target)
 {

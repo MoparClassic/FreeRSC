@@ -4,6 +4,46 @@
     <df name="FreeRSC" root=".">
       <df name="autom4te.cache">
       </df>
+      <df name="Client">
+        <df name="ant">
+          <df name="bin">
+          </df>
+          <df name="etc">
+            <df name="checkstyle">
+            </df>
+          </df>
+          <df name="lib">
+          </df>
+        </df>
+        <df name="conf">
+          <df name="client">
+            <df name="data">
+            </df>
+          </df>
+        </df>
+        <df name="lib">
+        </df>
+        <df name="src">
+          <df name="org">
+            <df name="rscdaemon">
+              <df name="client">
+                <df name="entityhandling">
+                  <df name="defs">
+                    <df name="extras">
+                    </df>
+                  </df>
+                </df>
+                <df name="model">
+                </df>
+                <df name="recorder">
+                </df>
+                <df name="util">
+                </df>
+              </df>
+            </df>
+          </df>
+        </df>
+      </df>
       <df name="include">
         <in>bubble.h</in>
         <in>chatmessage.h</in>
@@ -12,22 +52,30 @@
         <in>clientupdater.h</in>
         <in>common.h</in>
         <in>config.h</in>
+        <in>dataoperations.h</in>
         <in>entitystatelist.h</in>
+        <in>entityutil.h</in>
         <in>gameobject.h</in>
+        <in>inventory.h</in>
         <in>item.h</in>
         <in>linkedlist.h</in>
         <in>listener.h</in>
         <in>npc.h</in>
         <in>packethandler.h</in>
+        <in>packetsender.h</in>
         <in>player.h</in>
+        <in>playerutil.h</in>
         <in>projectile.h</in>
         <in>server.h</in>
+        <in>tile.h</in>
         <in>util.h</in>
         <in>world.h</in>
       </df>
       <df name="libs">
         <df name="libev">
-          <df name="autom4te.cache">
+          <df name=".deps">
+          </df>
+          <df name=".libs">
           </df>
           <in>ev++.h</in>
           <in>ev.c</in>
@@ -44,23 +92,39 @@
           <in>event.h</in>
         </df>
       </df>
+      <df name="m4">
+      </df>
       <df name="src">
+        <df name=".deps">
+        </df>
+        <df name=".libs">
+        </df>
         <in>circularbuffer.c</in>
         <in>client.c</in>
         <in>clientupdater.c</in>
+        <in>dataoperations.c</in>
         <in>entitystatelist.c</in>
+        <in>entityutil.c</in>
         <in>gameobject.c</in>
+        <in>inventory.c</in>
         <in>item.c</in>
         <in>linkedlist.c</in>
         <in>listener.c</in>
         <in>npc.c</in>
         <in>packethandler.c</in>
+        <in>packetsender.c</in>
         <in>player.c</in>
+        <in>playerutil.c</in>
         <in>server.c</in>
+        <in>tile.c</in>
         <in>util.c</in>
         <in>world.c</in>
       </df>
       <df name="tests">
+        <df name=".deps">
+        </df>
+        <df name=".libs">
+        </df>
         <in>AllTests.c</in>
         <in>CircularBufferTests.c</in>
         <in>CircularBufferTests.h</in>
@@ -70,10 +134,14 @@
         <in>ClientUpdaterTests.h</in>
         <in>CuTest.c</in>
         <in>CuTest.h</in>
+        <in>EncryptionTests.c</in>
+        <in>EncryptionTests.h</in>
         <in>EntityStateListTests.c</in>
         <in>EntityStateListTests.h</in>
         <in>GameObjectTests.c</in>
         <in>GameObjectTests.h</in>
+        <in>InventoryTests.c</in>
+        <in>InventoryTests.h</in>
         <in>ItemTests.c</in>
         <in>ItemTests.h</in>
         <in>LinkedListTests.c</in>

@@ -8,6 +8,8 @@
 
 #define MAX_BANK_SIZE       192
 #define MAX_INVENTORY_SIZE  30
+#define MAX_FRIENDS         100
+#define MAX_IGNORES         100
 
 #define PF_WARNED_TO_MOVE          (1 << 31)
 #define PF_LOGGED_IN               (1 << 30)
@@ -22,9 +24,17 @@
 #define PF_MOD_CROWN_ALLOWED       (1 << 21)
 #define PF_PMOD_CROWN_ALLOWED      (1 << 20)
 #define PF_DISPLAY_CROWN           (1 << 19)
+#define PF_ITEM_WIELDED            (1 << 18)
 
 typedef struct player player_t;
 typedef struct appearance_mapping appearance_mapping_t;
+typedef struct invitem invitem_t;
+
+struct invitem {
+    uint16_t item_id;
+    uint32_t amount;
+    uint32_t flags;
+};
 
 struct player {
     const char *username;
@@ -43,8 +53,15 @@ struct player {
 
     uint8_t max_stats[18];
     uint8_t cur_stats[18];
+    uint32_t experience[18];
     uint8_t combat_style;
     uint16_t fatigue;
+    uint16_t prayers;
+    uint16_t game_settings;
+    uint16_t privacy_settings;
+
+    uint64_t friend_list[MAX_FRIENDS];
+    uint64_t ignore_list[MAX_IGNORES];
 
     uint8_t hair_colour;
     uint8_t top_colour;
@@ -57,8 +74,7 @@ struct player {
     uint16_t bank_item_ids[MAX_BANK_SIZE];
     uint32_t bank_item_amounts[MAX_BANK_SIZE];
 
-    uint16_t inventory_item_ids[MAX_INVENTORY_SIZE];
-    uint32_t inventory_item_amounts[MAX_INVENTORY_SIZE];
+    invitem_t inventory_items[MAX_INVENTORY_SIZE];
 
     player_t *trade_target;
     player_t *duel_target;
@@ -93,6 +109,18 @@ int player_revalidate_watched_players(player_t *player);
 int player_update_viewed_players(player_t *player);
 
 int player_destroy(player_t *player);
+
+int player_prayer_enabled(player_t *player, int prayer);
+int player_activate_prayer(player_t *player, int prayer);
+int player_deactivate_prayer(player_t *player, int prayer);
+
+int player_game_setting_enabled(player_t *player, int setting);
+int player_set_game_setting(player_t *player, int setting);
+int player_unset_game_setting(player_t *player, int setting);
+
+int player_privacy_setting_enabled(player_t *player, int setting);
+int player_set_privacy_setting(player_t *player, int setting);
+int player_unset_privacy_setting(player_t *player, int setting);
 
 #endif	/* INCLUDED_PLAYER_H */
 

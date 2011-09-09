@@ -1,3 +1,14 @@
 *.class
 Client/bin/*
 */.svn
+*.so
+*.o
+Client/.classpath
+Client/.project
+Client/lib/.svn/
+Client/src/org/rscdaemon/client/entityhandling/.svn/
+Client/src/org/rscdaemon/client/entityhandling/defs/.svn/
+Client/src/org/rscdaemon/client/entityhandling/defs/extras/.svn/
+Client/src/org/rscdaemon/client/model/.svn/
+Client/src/org/rscdaemon/client/recorder/.svn/
+Client/src/org/rscdaemon/client/util/.svn/

@@ -1,5 +1,7 @@
 #include "packethandler.h"
+#include "packetsender.h"
 #include "dataoperations.h"
+#include "world.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,7 +50,7 @@ static int add_friend(client_t *, uint32_t, uint32_t);
 static int remove_friend(client_t *, uint32_t, uint32_t);
 static int add_ignore(client_t *, uint32_t, uint32_t);
 static int remove_ignore(client_t *, uint32_t, uint32_t);
-static int send_pm(client_t *, uint32_t, uint32_t);
+static int send_pm_packet(client_t *, uint32_t, uint32_t);
 static int use_item(client_t *, uint32_t, uint32_t);
 static int use_item_on_player(client_t *, uint32_t, uint32_t);
 static int use_item_on_door(client_t *, uint32_t, uint32_t);
@@ -330,7 +332,7 @@ int (*packet_decoder_table[256])(client_t *client, uint32_t opcode,
     &discard, /* 251 */
     &accept_duel, /* 252 */
     &close_shop, /* 253 */
-    &send_pm, /* 254 */
+    &send_pm_packet, /* 254 */
     &sell_item, /* 255 */
 };
 
@@ -395,6 +397,7 @@ login(client_t *client, uint32_t opcode, uint32_t psiz)
 {
     cbuffer_t *inbuf = &client->in_buffer;
     cbuffer_t *outbuf = &client->out_buffer;
+    player_t *player;
     uint8_t reconnecting = 0;
     uint16_t client_version = 0;
     uint32_t uid;
@@ -418,7 +421,7 @@ login(client_t *client, uint32_t opcode, uint32_t psiz)
     cbuffer_mark_read_position(inbuf);
     reconnecting = cbuffer_read_byte(inbuf);
     client_version = cbuffer_read_short(inbuf);
-    //encrypted_siz = cbuffer_read_byte(inbuf);
+    /* encrypted_siz = cbuffer_read_byte(inbuf); */
     for (i = 0; i < 4; ++i) {
         session_keys[i] = cbuffer_read_int(inbuf);
     }
@@ -433,6 +436,24 @@ login(client_t *client, uint32_t opcode, uint32_t psiz)
 
     return_code = 0; /* Successful login */
     cbuffer_send_data(outbuf, &return_code, sizeof(return_code));
+
+    player = get_unused_player_slot();
+    player->x = 2304;
+    player->y = 1776;
+    client->player = player;
+
+    send_server_info(client);
+    send_fatigue(client);
+    send_world_info(client);
+    send_inventory(client);
+    send_stats(client);
+    send_privacy_settings(client);
+    send_game_settings(client);
+    send_friend_list(client);
+    send_ignore_list(client);
+    send_combat_style(client);
+
+    world_register_client(client); /* Player will now receive updates */
 
     cbuffer_rewind_read_position(inbuf);
     discard(client, opcode, psiz);
@@ -719,7 +740,7 @@ remove_ignore(client_t *client, uint32_t opcode, uint32_t psiz)
 }
 
 static int
-send_pm(client_t *client, uint32_t opcode, uint32_t psiz)
+send_pm_packet(client_t *client, uint32_t opcode, uint32_t psiz)
 {
     discard(client, opcode, psiz);
     return 0;

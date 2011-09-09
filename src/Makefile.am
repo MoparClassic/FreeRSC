@@ -7,11 +7,13 @@ FreeRSC_SOURCES = circularbuffer.c \
 		entitystatelist.c \
 		entityutil.c \
 		gameobject.c \
+		inventory.c \
 		item.c \
 		linkedlist.c \
 		listener.c \
 		npc.c \
 		packethandler.c \
+		packetsender.c \
 		player.c \
 		playerutil.c \
 		server.c \

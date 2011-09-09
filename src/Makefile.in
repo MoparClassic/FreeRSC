@@ -53,8 +53,9 @@ PROGRAMS = $(bin_PROGRAMS)
 am_FreeRSC_OBJECTS = circularbuffer.$(OBJEXT) client.$(OBJEXT) \
 	clientupdater.$(OBJEXT) dataoperations.$(OBJEXT) \
 	entitystatelist.$(OBJEXT) entityutil.$(OBJEXT) \
-	gameobject.$(OBJEXT) item.$(OBJEXT) linkedlist.$(OBJEXT) \
-	listener.$(OBJEXT) npc.$(OBJEXT) packethandler.$(OBJEXT) \
+	gameobject.$(OBJEXT) inventory.$(OBJEXT) item.$(OBJEXT) \
+	linkedlist.$(OBJEXT) listener.$(OBJEXT) npc.$(OBJEXT) \
+	packethandler.$(OBJEXT) packetsender.$(OBJEXT) \
 	player.$(OBJEXT) playerutil.$(OBJEXT) server.$(OBJEXT) \
 	tile.$(OBJEXT) util.$(OBJEXT) world.$(OBJEXT)
 FreeRSC_OBJECTS = $(am_FreeRSC_OBJECTS)
@@ -199,11 +200,13 @@ FreeRSC_SOURCES = circularbuffer.c \
 		entitystatelist.c \
 		entityutil.c \
 		gameobject.c \
+		inventory.c \
 		item.c \
 		linkedlist.c \
 		listener.c \
 		npc.c \
 		packethandler.c \
+		packetsender.c \
 		player.c \
 		playerutil.c \
 		server.c \
@@ -307,11 +310,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/entitystatelist.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/entityutil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gameobject.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inventory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/item.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/linkedlist.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/listener.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/npc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/packethandler.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/packetsender.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/player.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/playerutil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/server.Po@am__quote@

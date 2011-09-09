@@ -1,5 +1,6 @@
 #include "world.h"
 #include "tile.h"
+#include "entityutil.h"
 
 #include <assert.h>
 #include <string.h>
@@ -52,6 +53,8 @@ void remove_player(player_t *player)
     eslist_clear(&player->watched_objects);
     eslist_clear(&player->watched_items);
     eslist_clear(&player->watched_npcs);
+
+    memset(player, 0, sizeof(player_t));
     player->index = UNUSED;
 }
 
@@ -83,14 +86,31 @@ void remove_npc(npc_t *npc)
     npc->index = UNUSED;
 }
 
-int world_register_player(player_t *player)
+int world_register_client(client_t *client)
 {
-
+    linkedlist_prepend(&client_list, client);
+    ENTITY_SET_FLAGS(client->player, PF_LOGGED_IN);
+    return 1;
 }
 
-int world_unregister_player(player_t *player)
+int world_unregister_client(client_t *client)
 {
+    player_t *p;
+    tile_t *loc;
 
+    assert(client); /* client must not be a NULL pointer */
+
+    p = client->player;
+    loc = &tiles[p->x][p->y];
+    
+    ENTITY_UNSET_FLAGS(p, PF_LOGGED_IN);
+
+    /* Remove the player from their current tile location */
+    linkedlist_remove(&loc->players, p);
+
+    /* Remove the client from the client list */
+    linkedlist_remove(&client_list, client);
+    return 1;
 }
 
 int world_register_item(grounditem_t *item)

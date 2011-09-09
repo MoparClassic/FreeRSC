@@ -78,6 +78,8 @@ game_loop(struct ev_timer *w, int revents)
     assert(w); /* w must not be a NULL pointer */
 
     timestamp = get_current_time_millis();
+
+    /* Send queued packets */
     send_client_updates();
 }
 
